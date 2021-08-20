@@ -1,9 +1,11 @@
 # Errata
 
+_[![Errata NuGet Version](https://img.shields.io/nuget/v/errata.svg?style=flat&label=NuGet%3A%20Errata)](https://www.nuget.org/packages/errata)_
+
 A library that makes it easy to create and display diagnostics of
 different kinds.
 
-![Example](resources/demo.png)
+![Example](resources/gfx/screenshots/demo.png)
 
 ## Running examples
 
