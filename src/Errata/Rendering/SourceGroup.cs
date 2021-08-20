@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Errata.Rendering;
 
 namespace Errata
 {
@@ -8,12 +9,12 @@ namespace Errata
     {
         public Source Source { get; }
         public Range Span { get; }
-        public IReadOnlyList<Label> Labels { get; }
+        public IReadOnlyList<LabelInfo> Labels { get; }
 
-        public SourceGroup(Source source, IEnumerable<Label> labels)
+        public SourceGroup(Source source, IEnumerable<LabelInfo> labels)
         {
             Source = source;
-            Labels = new List<Label>(labels);
+            Labels = new List<LabelInfo>(labels);
 
             var min = Labels.Min(info => info.Span.Start);
             var max = Labels.Max(label => label.Span.End);

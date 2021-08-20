@@ -38,8 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Expectations\" />
-    <Folder Include="Expectations\Report\Rendering\" />
+    <Folder Include="Expectations\Report\" />
   </ItemGroup>
 
 </Project>

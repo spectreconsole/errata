@@ -1,15 +1,16 @@
 using System;
+using Errata.Rendering;
 
 namespace Errata
 {
     internal sealed class LineLabel
     {
-        public Label Label { get; }
+        public LabelInfo Label { get; }
         public int Start { get; set; }
         public int End { get; set; }
         public int Anchor { get; set; }
 
-        public LineLabel(Label label)
+        public LineLabel(LabelInfo label)
         {
             Label = label ?? throw new ArgumentNullException(nameof(label));
         }

@@ -25,7 +25,7 @@ namespace Errata.Tests
             var source = new Source("Program.cs", "public void Main()\n{\n\tConsole.WriteLine(\"Hello\")\n}");
 
             // When
-            var (line, _, _) = source.GetOffsetLine(22);
+            var (line, _, _) = source.GetLineOffset(22);
 
             // Then
             line.Text.ShouldBe("\tConsole.WriteLine(\"Hello\")");
@@ -38,7 +38,7 @@ namespace Errata.Tests
             var source = new Source("Program.cs", "public void Main()\n{\n\tConsole.WriteLine(\"Hello\")\n}");
 
             // When
-            var (_, row, _) = source.GetOffsetLine(22);
+            var (_, row, _) = source.GetLineOffset(22);
 
             // Then
             row.ShouldBe(2);
@@ -51,7 +51,7 @@ namespace Errata.Tests
             var source = new Source("Program.cs", "public void Main()\n{\n\tConsole.WriteLine(\"Hello\")\n}");
 
             // When
-            var (_, _, column) = source.GetOffsetLine(22);
+            var (_, _, column) = source.GetLineOffset(22);
 
             // Then
             column.ShouldBe(1);

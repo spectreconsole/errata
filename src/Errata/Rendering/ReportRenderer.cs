@@ -63,7 +63,7 @@ namespace Errata
             // Iterate all source groups
             foreach (var (_, first, last, group) in groups.Enumerate())
             {
-                var lineRange = group.Source.GetLineRange(group.Span);
+                var lineRange = group.Source.GetLineSpan(group.Span);
 
                 // 🔎 ···┌─[Program.cs]
                 builder.AppendSpaces(lineNumberMaxWidth + 2);

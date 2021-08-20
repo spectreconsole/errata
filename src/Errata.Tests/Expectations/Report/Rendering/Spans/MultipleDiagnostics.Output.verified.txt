@@ -1,0 +1,20 @@
+Error [CS0019]: Operator '/' cannot be applied to operands of type 'string' and 'int'
+NOTE: Try changing the type
+    ┌─[Program.cs]
+    │
+ 15 │             var qux = foo / bar;
+    ·                       ─┬─ ┬ ─┬─
+    ·                        │  │  ╰──── This is of type 'string'
+    ·                        │  ╰─────── Division is not possible    
+    ·                        ╰────────── This is of type 'int'      
+    │
+    └─
+ 
+Warning [IDE0055]: Fix formatting
+   ┌─[Program.cs]
+   │
+ 9 │     public static class Program  
+   ·                                ─┬
+   ·                                 ╰── Code should not contain trailing whitespace
+   │
+   └─
