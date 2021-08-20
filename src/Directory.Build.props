@@ -19,6 +19,7 @@
     <Authors>Patrik Svensson, Phil Scott, James Randall</Authors>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/spectreconsole/errata</RepositoryUrl>
+    <PackageIcon>small-logo.png</PackageIcon>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/spectreconsole/errata</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
