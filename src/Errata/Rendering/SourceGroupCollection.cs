@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Errata.Rendering;
 
 namespace Errata
 {
@@ -23,7 +24,7 @@ namespace Errata
                 throw new ArgumentNullException(nameof(labels));
             }
 
-            var groups = new Dictionary<Source, List<Label>>(Source.Comparer);
+            var groups = new Dictionary<Source, List<LabelInfo>>(Source.Comparer);
 
             foreach (var label in labels)
             {
@@ -32,15 +33,17 @@ namespace Errata
                     throw new InvalidOperationException($"Could not get source for '{label.SourceId}'");
                 }
 
-                var startLine = source.GetOffsetLine(label.Span.Start).LineIndex;
-                var endLine = source.GetOffsetLine(label.Span.End).LineIndex;
+                var info = new LabelInfo(label.SourceId, label.GetSpan(source), label.Message, label.Color, label.Note);
+
+                var startLine = source.GetLineOffset(info.Span.Start).LineIndex;
+                var endLine = source.GetLineOffset(info.Span.End).LineIndex;
 
                 if (!groups.TryGetValue(source, out var g))
                 {
-                    groups.Add(source, new List<Label>());
+                    groups.Add(source, new List<LabelInfo>());
                 }
 
-                groups[source].Add(label);
+                groups[source].Add(info);
             }
 
             return new SourceGroupCollection(
@@ -51,7 +54,7 @@ namespace Errata
         {
             return this.Max(group =>
             {
-                var lineRange = group.Source.GetLineRange(group.Span);
+                var lineRange = group.Source.GetLineSpan(group.Span);
                 var end = lineRange.End.Value == 0 ? 1 : lineRange.End.Value;
                 return (int)(Math.Log10(end) + 1);
             });

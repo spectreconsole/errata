@@ -29,31 +29,7 @@ namespace Errata
             Text = text ?? string.Empty;
         }
 
-        private sealed class SourceComparer : IEqualityComparer<Source>
-        {
-            public static SourceComparer Shared { get; } = new SourceComparer();
-
-            public bool Equals(Source? x, Source? y)
-            {
-                if (x == null && y == null)
-                {
-                    return true;
-                }
-                else if (x == null || y == null)
-                {
-                    return false;
-                }
-
-                return x.Id.Equals(y.Id, StringComparison.Ordinal);
-            }
-
-            public int GetHashCode([DisallowNull] Source obj)
-            {
-                return obj.Id.GetHashCode();
-            }
-        }
-
-        public (TextLine Line, int LineIndex, int ColumnIndex) GetOffsetLine(int offset)
+        public (TextLine Line, int LineIndex, int ColumnIndex) GetLineOffset(int offset)
         {
             if (offset < 0)
             {
@@ -72,11 +48,37 @@ namespace Errata
             return (line, lineIndex, columnIndex);
         }
 
-        public Range GetLineRange(Range span)
+        public Range GetLineSpan(Range span)
         {
-            var start = GetOffsetLine(span.Start.Value).LineIndex;
-            var end = GetOffsetLine(Math.Max(span.Start.Value, span.End.Value)).LineIndex;
+            var start = GetLineOffset(span.Start.Value).LineIndex;
+            var end = GetLineOffset(Math.Max(span.Start.Value, span.End.Value)).LineIndex;
             return start..end;
+        }
+
+        public Range GetSpan(Location location, int length)
+        {
+            var row = location.Row - 1;
+            var column = location.Column - 1;
+
+            if (row >= Lines.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(row), "Label row exceeded number of rows");
+            }
+
+            var line = Lines[row];
+            if (column >= line.Length - 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(column), "label column cannot start at the end of the line");
+            }
+
+            // Trying to grab text outide of the line?
+            if (column + length > line.Length)
+            {
+                // Adjust the length
+                length = line.Length - column;
+            }
+
+            return (line.Offset + column)..(line.Offset + column + length);
         }
 
         private int GetLineIndex(int offset)
@@ -98,6 +100,30 @@ namespace Errata
             }
 
             throw new InvalidOperationException("Line index could not be found");
+        }
+    }
+
+    internal sealed class SourceComparer : IEqualityComparer<Source>
+    {
+        public static SourceComparer Shared { get; } = new SourceComparer();
+
+        public bool Equals(Source? x, Source? y)
+        {
+            if (x == null && y == null)
+            {
+                return true;
+            }
+            else if (x == null || y == null)
+            {
+                return false;
+            }
+
+            return x.Id.Equals(y.Id, StringComparison.Ordinal);
+        }
+
+        public int GetHashCode([DisallowNull] Source obj)
+        {
+            return obj.Id.GetHashCode();
         }
     }
 }
