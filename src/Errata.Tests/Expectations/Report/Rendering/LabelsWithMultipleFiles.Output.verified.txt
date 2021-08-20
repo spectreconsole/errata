@@ -1,0 +1,17 @@
+Error [C2084]: Compiler error
+NOTE: Overloaded member not found
+   ┌─[Foo.cpp]
+   │
+ 2 │ void Foo::bar(float)
+   ·      ───────┬───────
+   ·             ╰──  'void Foo::bar(float)': overloaded member function not found in 'Foo'
+   ·
+   · NOTE: See declaration of 'Foo' in Foo.h
+   ·
+   ├─[Foo.h]
+   │
+ 3 │     void bar(int);
+   ·     ───────┬──────
+   ·            ╰── See declaration of 'Foo'
+   │
+   └─

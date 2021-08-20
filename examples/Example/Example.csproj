@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ExampleTitle>Demo</ExampleTitle>
+    <ExampleDescription>Demonstrates different kinds of diagnostics.</ExampleDescription>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Files\Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Files\Example.md" />
+    <None Remove="Files\Foo.cpp" />
+    <None Remove="Files\Foo.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Files\Example.md" />
+    <EmbeddedResource Include="Files\Foo.cpp" />
+    <EmbeddedResource Include="Files\Foo.h" />
+    <EmbeddedResource Include="Files\Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+</Project>

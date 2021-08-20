@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Example.md" />
+    <EmbeddedResource Include="Data\Foo.cpp" />
+    <EmbeddedResource Include="Data\Foo.h" />
+    <EmbeddedResource Include="Data\Program.cs" />
+    <Compile Remove="Data\Program.cs" />
+    <None Remove="Data\Example.md" />
+    <None Remove="Data\Foo.cpp" />
+    <None Remove="Data\Foo.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Shouldly" Version="4.0.3" />
+    <PackageReference Include="Spectre.Console.Testing" Version="0.41.0" />
+    <PackageReference Include="Spectre.Verify.Extensions" Version="0.4.0" />
+    <PackageReference Include="Verify.Xunit" Version="11.23.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Errata\Errata.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Expectations\" />
+    <Folder Include="Expectations\Report\Rendering\" />
+  </ItemGroup>
+
+</Project>

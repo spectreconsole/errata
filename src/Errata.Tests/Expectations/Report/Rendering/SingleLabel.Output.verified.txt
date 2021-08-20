@@ -1,0 +1,8 @@
+Error [SPELLING001]: There are spelling errors
+    ┌─[Example.md]
+    │
+ 11 │ And that's why I always say WUBBA LUBBA DUB DUB! 
+    ·                             ─────────┬─────────
+    ·                                      ╰── Did you mean 'Yabba dabba doo'?
+    │
+    └─
