@@ -11,7 +11,9 @@ namespace Errata
 
             if (diagnostic.Category != null)
             {
-                builder.Append("[b]").Append(diagnostic.Category).Append("[/]");
+                builder.Append("[b]")
+                    .Append(diagnostic.Category.EscapeMarkup())
+                    .Append("[/]");
             }
 
             if (diagnostic.Code != null)
@@ -22,16 +24,19 @@ namespace Errata
                 }
 
                 builder.Append("[[");
-                builder.Append(diagnostic.Code);
+                builder.Append(diagnostic.Code.EscapeMarkup());
                 builder.Append("]]");
             }
 
-            if (diagnostic.Category != null || diagnostic.Code != null)
+            if (!string.IsNullOrWhiteSpace(diagnostic.Category)
+                || !string.IsNullOrWhiteSpace(diagnostic.Code))
             {
                 builder.Append("[white]: [/]");
             }
 
-            builder.Append("[white]").Append(diagnostic.Message).Append("[/]");
+            builder.Append("[white]")
+                .Append(diagnostic.Message.EscapeMarkup())
+                .Append("[/]");
 
             return new Markup(
                 builder.ToString(),
