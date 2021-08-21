@@ -1,7 +1,7 @@
 using System;
 using Spectre.Console;
 
-namespace Errata.Rendering
+namespace Errata
 {
     internal sealed class LabelInfo
     {

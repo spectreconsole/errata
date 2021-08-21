@@ -3,34 +3,14 @@ using Spectre.Console;
 
 namespace Errata
 {
+    [Obsolete("Use Diagnostic.Error(..) instead")]
     public sealed class ErrorDiagnostic : Diagnostic
     {
-        public string? Code { get; set; }
-
         public ErrorDiagnostic(string message)
             : base(message)
         {
-        }
-
-        public override Color GetColor()
-        {
-            return Color.Red;
-        }
-
-        public override string GetPrefix()
-        {
-            if (string.IsNullOrWhiteSpace(Code))
-            {
-                return "Error";
-            }
-
-            return $"Error [{Code}]";
-        }
-
-        public Diagnostic WithCode(string code)
-        {
-            Code = code ?? throw new ArgumentNullException(nameof(code));
-            return this;
+            Color = Color.Red;
+            Category = "Error";
         }
     }
 }

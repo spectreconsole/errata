@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Errata.Rendering;
 
 namespace Errata
 {
@@ -52,6 +51,11 @@ namespace Errata
 
         public int GetLineNumberMaxWidth()
         {
+            if (Count == 0)
+            {
+                return 0;
+            }
+
             return this.Max(group =>
             {
                 var lineRange = group.Source.GetLineSpan(group.Span);

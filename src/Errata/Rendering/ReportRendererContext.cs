@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
@@ -7,19 +8,28 @@ namespace Errata
 {
     internal sealed class ReportRendererContext
     {
+        private readonly IAnsiConsole _console;
         private readonly List<Segment> _buffer;
         private readonly List<SegmentLine> _lines;
 
         public CharacterSet CharacterSet { get; }
-        public ReportSettings Settings { get; }
+        public DiagnosticFormatter Formatter { get; }
 
         public ReportRendererContext(IAnsiConsole console, ReportSettings? settings)
         {
+            _console = console ?? throw new ArgumentNullException(nameof(console));
             _buffer = new List<Segment>();
             _lines = new List<SegmentLine>();
 
-            Settings = settings ?? new ReportSettings();
-            CharacterSet = Settings.Characters ??= CharacterSet.Create(console);
+            settings ??= new ReportSettings();
+            Formatter = settings.Formatter ?? new DiagnosticFormatter();
+            CharacterSet = settings.Characters ??= CharacterSet.Create(_console);
+        }
+
+        public void AppendMarkup(Markup markup)
+        {
+            var segments = markup.GetSegments(_console).Where(s => !s.IsLineBreak);
+            _buffer.AddRange(segments);
         }
 
         public void Append(Character character, Color? color = null, Decoration? decoration = null)
