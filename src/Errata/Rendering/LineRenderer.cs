@@ -7,13 +7,13 @@ namespace Errata
     internal static class LineRenderer
     {
         public static void DrawAnchors(
-            ReportRendererContext builder,
+            ReportRendererContext ctx,
             IReadOnlyList<LineLabel> lineLabels,
             int lineNumberMaxWidth)
         {
-            if (builder is null)
+            if (ctx is null)
             {
-                throw new System.ArgumentNullException(nameof(builder));
+                throw new System.ArgumentNullException(nameof(ctx));
             }
 
             if (lineLabels is null)
@@ -22,13 +22,13 @@ namespace Errata
             }
 
             // 🔎 ···(dot)
-            builder.AppendSpaces(lineNumberMaxWidth + 2);
-            builder.Append(Character.Dot, Color.Grey);
-            builder.Append(" ");
+            ctx.AppendSpaces(lineNumberMaxWidth + 2);
+            ctx.Append(Character.Dot, Color.Grey);
+            ctx.Append(" ");
 
             // 🔎 ···········
             var startMargin = lineLabels[0].Start;
-            builder.AppendSpaces(startMargin);
+            ctx.AppendSpaces(startMargin);
 
             var lineLabelIndex = 0;
             var index = startMargin;
@@ -37,7 +37,7 @@ namespace Errata
                 if (index < lineLabel.Start)
                 {
                     var diff = lineLabel.Start - index;
-                    builder.AppendSpaces(diff);
+                    ctx.AppendSpaces(diff);
                 }
 
                 // 🔎 ──┬──
@@ -45,12 +45,12 @@ namespace Errata
                 {
                     if (i == lineLabel.Anchor)
                     {
-                        builder.Append(Character.Anchor, lineLabel.Label.Color);
+                        ctx.Append(Character.Anchor, lineLabel.Label.Color);
                     }
                     else
                     {
                         // ─
-                        builder.Append(Character.AnchorHorizontalLine, lineLabel.Label.Color);
+                        ctx.Append(Character.AnchorHorizontalLine, lineLabel.Label.Color);
                     }
                 }
 
@@ -58,24 +58,24 @@ namespace Errata
                 if (lineLabelIndex != lineLabels.Count - 1)
                 {
                     // 🔎 ·
-                    builder.AppendSpace();
+                    ctx.AppendSpace();
                     index = lineLabel.End + 1;
                 }
 
                 lineLabelIndex++;
             }
 
-            builder.CommitLine();
+            ctx.CommitLine();
         }
 
         public static void DrawLines(
-            ReportRendererContext builder,
+            ReportRendererContext ctx,
             IReadOnlyList<LineLabel> lineLabels,
             int lineNumberMaxWidth)
         {
-            if (builder is null)
+            if (ctx is null)
             {
-                throw new System.ArgumentNullException(nameof(builder));
+                throw new System.ArgumentNullException(nameof(ctx));
             }
 
             if (lineLabels is null)
@@ -92,10 +92,10 @@ namespace Errata
             for (var rowIndex = 0; rowIndex < lineLabels.Count; rowIndex++)
             {
                 // 🔎 ···(dot)
-                builder.AppendSpaces(lineNumberMaxWidth + 2);
-                builder.Append(Character.Dot, Color.Grey);
-                builder.Append(" ");
-                builder.AppendSpaces(startMargin);
+                ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                ctx.Append(Character.Dot, Color.Grey);
+                ctx.Append(" ");
+                ctx.AppendSpaces(startMargin);
 
                 var lineLabelIndex = 0;
                 var index = startMargin;
@@ -105,7 +105,7 @@ namespace Errata
                     {
                         // 🔎 ···········
                         var diff = label.Start - index;
-                        builder.AppendSpaces(diff);
+                        ctx.AppendSpaces(diff);
                     }
 
                     if (lineLabelIndex == currentLineLabel)
@@ -115,18 +115,18 @@ namespace Errata
                         {
                             if (i == label.Anchor)
                             {
-                                builder.Append(Character.BottomLeftCornerRound, label.Label.Color);
+                                ctx.Append(Character.BottomLeftCornerRound, label.Label.Color);
                             }
                             else
                             {
-                                builder.AppendSpace();
+                                ctx.AppendSpace();
                             }
                         }
 
                         // 🔎 ────── A label message
                         var diff = endMargin - label.Anchor;
-                        builder.AppendRepeated(Character.HorizontalLine, diff, label.Label.Color);
-                        builder.Append(" " + label.Label.Message, label.Label.Color);
+                        ctx.AppendRepeated(Character.HorizontalLine, diff, label.Label.Color);
+                        ctx.Append(" " + label.Label.Message, label.Label.Color);
                     }
                     else
                     {
@@ -137,16 +137,16 @@ namespace Errata
                             {
                                 if (lineLabelIndex > currentLineLabel)
                                 {
-                                    builder.AppendSpace();
+                                    ctx.AppendSpace();
                                 }
                                 else
                                 {
-                                    builder.Append(Character.AnchorVerticalLine, label.Label.Color);
+                                    ctx.Append(Character.AnchorVerticalLine, label.Label.Color);
                                 }
                             }
                             else
                             {
-                                builder.AppendSpace();
+                                ctx.AppendSpace();
                             }
                         }
                     }
@@ -155,14 +155,14 @@ namespace Errata
                     if (lineLabelIndex != lineLabels.Count - 1)
                     {
                         // 🔎 ·
-                        builder.AppendSpace();
+                        ctx.AppendSpace();
                         index = label.End + 1;
                     }
 
                     lineLabelIndex++;
                 }
 
-                builder.CommitLine();
+                ctx.CommitLine();
                 currentLineLabel--;
             }
         }

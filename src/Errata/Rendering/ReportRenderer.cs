@@ -11,7 +11,7 @@ namespace Errata
 
         public ReportRenderer(IAnsiConsole console, ISourceRepository repository)
         {
-            _console = console ?? throw new ArgumentNullException(nameof(console));
+            _console = new RenderConsole(console);
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
@@ -36,25 +36,25 @@ namespace Errata
             _console.Write(new ReportRenderable(ctx.GetLines()));
         }
 
-        private void Render(ReportRendererContext builder, Diagnostic diagnostic)
+        private void Render(ReportRendererContext ctx, Diagnostic diagnostic)
         {
             // Create the source groups from the labels
             var groups = SourceGroupCollection.CreateFromLabels(_repository, diagnostic.Labels);
 
             // 🔎 Error [ABC123]: This is the error
-            var prefix = diagnostic.GetPrefix();
-            builder.Append(prefix, diagnostic.GetColor());
-            builder.Append(Character.Colon);
-            builder.Append(' ');
-            builder.Append(diagnostic.Message);
-            builder.CommitLine();
+            var prefix = ctx.Formatter.Format(diagnostic);
+            if (prefix != null)
+            {
+                ctx.AppendMarkup(prefix);
+                ctx.CommitLine();
+            }
 
             if (!string.IsNullOrWhiteSpace(diagnostic.Note))
             {
                 // 🔎 NOTE: This is a note
-                builder.Append("NOTE: ", Color.Aqua);
-                builder.Append(diagnostic.Note);
-                builder.CommitLine();
+                ctx.Append("NOTE: ", Color.Aqua);
+                ctx.Append(diagnostic.Note);
+                ctx.CommitLine();
             }
 
             // Find out the max width of the line number
@@ -66,18 +66,18 @@ namespace Errata
                 var lineRange = group.Source.GetLineSpan(group.Span);
 
                 // 🔎 ···┌─[Program.cs]
-                builder.AppendSpaces(lineNumberMaxWidth + 2);
-                builder.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
-                builder.Append(Character.HorizontalLine, Color.Grey);
-                builder.Append("[", Color.Grey);
-                builder.Append(group.Source.Name, Color.White);
-                builder.Append("]", Color.Grey);
-                builder.CommitLine();
+                ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                ctx.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
+                ctx.Append(Character.HorizontalLine, Color.Grey);
+                ctx.Append("[", Color.Grey);
+                ctx.Append(group.Source.Name, Color.White);
+                ctx.Append("]", Color.Grey);
+                ctx.CommitLine();
 
                 // 🔎 ···│
-                builder.AppendSpaces(lineNumberMaxWidth + 2);
-                builder.Append(Character.VerticalLine, Color.Grey);
-                builder.CommitLine();
+                ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                ctx.Append(Character.VerticalLine, Color.Grey);
+                ctx.CommitLine();
 
                 // Iterate all lines
                 for (var lineIndex = lineRange.Start.Value; lineIndex <= lineRange.End.Value; lineIndex++)
@@ -91,22 +91,22 @@ namespace Errata
                     }
 
                     // 🔎 ·38·│ var foo = bar
-                    builder.Append($" {(lineIndex + 1).ToString().PadRight(lineNumberMaxWidth)} ");
-                    builder.Append(Character.VerticalLine, Color.Grey);
-                    builder.Append(" ");
-                    builder.Append(line.Text);
-                    builder.CommitLine();
+                    ctx.Append($" {(lineIndex + 1).ToString().PadRight(lineNumberMaxWidth)} ");
+                    ctx.Append(Character.VerticalLine, Color.Grey);
+                    ctx.Append(" ");
+                    ctx.Append(line.Text);
+                    ctx.CommitLine();
 
-                    LineRenderer.DrawAnchors(builder, labels, lineNumberMaxWidth);
-                    LineRenderer.DrawLines(builder, labels, lineNumberMaxWidth);
+                    LineRenderer.DrawAnchors(ctx, labels, lineNumberMaxWidth);
+                    LineRenderer.DrawLines(ctx, labels, lineNumberMaxWidth);
 
                     if (lineIndex != lineRange.End.Value)
                     {
                         // 🔎 ···(dot)
-                        builder.AppendSpaces(lineNumberMaxWidth + 2);
-                        builder.Append(Character.Dot, Color.Grey);
-                        builder.Append(" ");
-                        builder.CommitLine();
+                        ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                        ctx.Append(Character.Dot, Color.Grey);
+                        ctx.Append(" ");
+                        ctx.CommitLine();
                     }
                 }
 
@@ -119,29 +119,29 @@ namespace Errata
                         if (firstLabel)
                         {
                             // 🔎 ···(dot)
-                            builder.AppendSpaces(lineNumberMaxWidth + 2);
-                            builder.Append(Character.Dot, Color.Grey);
-                            builder.CommitLine();
+                            ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                            ctx.Append(Character.Dot, Color.Grey);
+                            ctx.CommitLine();
                         }
 
                         // Got a note?
                         if (!string.IsNullOrWhiteSpace(labelWithNote.Note))
                         {
                             // 🔎 ···(dot) NOTE: This is a note
-                            builder.AppendSpaces(lineNumberMaxWidth + 2);
-                            builder.Append(Character.Dot, Color.Grey);
-                            builder.AppendSpace();
-                            builder.Append("NOTE: ", Color.Aqua);
-                            builder.Append(labelWithNote.Note ?? string.Empty);
-                            builder.CommitLine();
+                            ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                            ctx.Append(Character.Dot, Color.Grey);
+                            ctx.AppendSpace();
+                            ctx.Append("NOTE: ", Color.Aqua);
+                            ctx.Append(labelWithNote.Note ?? string.Empty);
+                            ctx.CommitLine();
                         }
 
                         if (lastLabel)
                         {
                             // 🔎 ···(dot)
-                            builder.AppendSpaces(lineNumberMaxWidth + 2);
-                            builder.Append(Character.Dot, Color.Grey);
-                            builder.CommitLine();
+                            ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                            ctx.Append(Character.Dot, Color.Grey);
+                            ctx.CommitLine();
                         }
                     }
                 }
@@ -149,15 +149,15 @@ namespace Errata
                 if (last)
                 {
                     // 🔎 ···│
-                    builder.AppendSpaces(lineNumberMaxWidth + 2);
-                    builder.Append(Character.VerticalLine, Color.Grey);
-                    builder.CommitLine();
+                    ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                    ctx.Append(Character.VerticalLine, Color.Grey);
+                    ctx.CommitLine();
 
                     // 🔎 ···└─
-                    builder.AppendSpaces(lineNumberMaxWidth + 2);
-                    builder.Append(Character.BottomLeftCornerHard, Color.Grey);
-                    builder.Append(Character.HorizontalLine, Color.Grey);
-                    builder.CommitLine();
+                    ctx.AppendSpaces(lineNumberMaxWidth + 2);
+                    ctx.Append(Character.BottomLeftCornerHard, Color.Grey);
+                    ctx.Append(Character.HorizontalLine, Color.Grey);
+                    ctx.CommitLine();
                 }
             }
         }

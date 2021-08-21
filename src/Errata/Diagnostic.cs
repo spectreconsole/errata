@@ -4,24 +4,42 @@ using Spectre.Console;
 
 namespace Errata
 {
-    public abstract class Diagnostic
+    public class Diagnostic
     {
         public string Message { get; }
-        public string? Note { get; set; }
         public List<Label> Labels { get; }
+        public string? Category { get; set; }
+        public string? Code { get; set; }
+        public Color Color { get; set; }
+        public string? Note { get; set; }
 
-        protected Diagnostic(string message)
+        public Diagnostic(string message)
         {
             Message = message;
             Labels = new List<Label>();
         }
 
-        public abstract Color GetColor();
-        public abstract string GetPrefix();
+        public Diagnostic WithColor(Color color)
+        {
+            Color = color;
+            return this;
+        }
+
+        public Diagnostic WithCategory(string category)
+        {
+            Category = category;
+            return this;
+        }
+
+        public Diagnostic WithCode(string code)
+        {
+            Code = code;
+            return this;
+        }
 
         public Diagnostic WithNote(string note)
         {
-            Note = note ?? throw new ArgumentNullException(nameof(note));
+            Note = note;
             return this;
         }
 
@@ -36,34 +54,40 @@ namespace Errata
             return this;
         }
 
-        public static WarningDiagnostic Warning(string message)
+        public static Diagnostic Warning(string message)
         {
             if (message is null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
 
-            return new WarningDiagnostic(message);
+            return new Diagnostic(message)
+                .WithCategory("Warning")
+                .WithColor(Color.Yellow);
         }
 
-        public static ErrorDiagnostic Error(string message)
+        public static Diagnostic Error(string message)
         {
             if (message is null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
 
-            return new ErrorDiagnostic(message);
+            return new Diagnostic(message)
+                .WithCategory("Error")
+                .WithColor(Color.Red);
         }
 
-        public static InfoDiagnostic Info(string message)
+        public static Diagnostic Info(string message)
         {
             if (message is null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
 
-            return new InfoDiagnostic(message);
+            return new Diagnostic(message)
+                .WithCategory("Info")
+                .WithColor(Color.Blue);
         }
     }
 }

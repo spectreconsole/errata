@@ -1,5 +1,4 @@
 using System;
-using Errata.Rendering;
 
 namespace Errata
 {
