@@ -31,7 +31,7 @@ namespace Errata
         /// <summary>
         /// Gets the character span for the line.
         /// </summary>
-        public Range Range { get; }
+        public TextSpan Span { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextLine"/> class.
@@ -45,7 +45,7 @@ namespace Errata
             Text = text ?? string.Empty;
             Offset = offset;
             Length = Text.Length;
-            Range = Offset..(Offset + Length);
+            Span = new TextSpan(Offset, Offset + Length);
         }
 
         /// <summary>

@@ -32,17 +32,20 @@ namespace Errata
                     throw new InvalidOperationException($"Could not get source for '{label.SourceId}'");
                 }
 
-                var info = new LabelInfo(label.SourceId, label.GetSpan(source), label.Message, label.Color, label.Note);
-
-                var startLine = source.GetLineOffset(info.Span.Start).LineIndex;
-                var endLine = source.GetLineOffset(info.Span.End).LineIndex;
-
-                if (!groups.TryGetValue(source, out var g))
+                if (!groups.TryGetValue(source, out var _))
                 {
                     groups.Add(source, new List<LabelInfo>());
                 }
 
-                groups[source].Add(info);
+                var span = label.GetSpan(source);
+                var startLine = source.GetLineOffset(span.Start).LineIndex;
+                var endLine = source.GetLineOffset(span.End).LineIndex;
+                var kind = startLine == endLine ? LabelKind.SingleLine : LabelKind.MultiLine;
+
+                groups[source].Add(
+                    new LabelInfo(
+                        label.SourceId, span, label.Message,
+                        label.Color, label.Note, kind));
             }
 
             return new SourceGroupCollection(
@@ -59,7 +62,7 @@ namespace Errata
             return this.Max(group =>
             {
                 var lineRange = group.Source.GetLineSpan(group.Span);
-                var end = lineRange.End.Value == 0 ? 1 : lineRange.End.Value;
+                var end = lineRange.End == 0 ? 1 : lineRange.End;
                 return (int)(Math.Log10(end) + 1);
             });
         }

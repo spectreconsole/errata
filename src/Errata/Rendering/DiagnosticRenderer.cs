@@ -35,8 +35,6 @@ namespace Errata
             // Iterate all source groups
             foreach (var (_, first, last, group) in ctx.Groups.Enumerate())
             {
-                var lineRange = group.Source.GetLineSpan(group.Span);
-
                 // 🔎 ···┌─[Program.cs]
                 ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
                 ctx.Builder.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
@@ -51,8 +49,9 @@ namespace Errata
                 ctx.Builder.Append(Character.VerticalLine, Color.Grey);
                 ctx.Builder.CommitLine();
 
-                // Iterate all lines
-                for (var lineIndex = lineRange.Start.Value; lineIndex <= lineRange.End.Value; lineIndex++)
+                // Get the line range and iterate them
+                var lineRange = group.Source.GetLineSpan(group.Span);
+                foreach (var lineIndex in lineRange)
                 {
                     // Get the current line and it's labels
                     var line = group.Source.Lines[lineIndex];
@@ -71,7 +70,7 @@ namespace Errata
                     LineRenderer.DrawAnchors(ctx, labels);
                     LineRenderer.DrawLines(ctx, labels);
 
-                    if (lineIndex != lineRange.End.Value)
+                    if (lineIndex != lineRange.End)
                     {
                         // 🔎 ···(dot)
                         RenderMargin(ctx);

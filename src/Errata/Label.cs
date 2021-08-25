@@ -8,7 +8,7 @@ namespace Errata
     /// </summary>
     public sealed class Label
     {
-        private readonly Range? _span;
+        private readonly TextSpan? _span;
         private readonly Location? _location;
         private int? _length;
 
@@ -39,6 +39,21 @@ namespace Errata
         /// <param name="span">The character span in the source.</param>
         /// <param name="message">The message.</param>
         public Label(string sourceId, Range span, string message)
+        {
+            _span = new TextSpan(span);
+
+            SourceId = sourceId ?? throw new ArgumentNullException(nameof(sourceId));
+            Message = message ?? throw new ArgumentNullException(nameof(message));
+            Color = Color.White;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Label"/> class.
+        /// </summary>
+        /// <param name="sourceId">The source ID.</param>
+        /// <param name="span">The character span in the source.</param>
+        /// <param name="message">The message.</param>
+        public Label(string sourceId, TextSpan span, string message)
         {
             _span = span;
 
@@ -79,13 +94,13 @@ namespace Errata
             return this;
         }
 
-        internal Range GetSpan(Source source)
+        internal TextSpan GetSpan(Source source)
         {
             if (_span != null)
             {
                 if (_length != null)
                 {
-                    return _span.Value.Start..(_span.Value.Start.Value + _length.Value);
+                    return new TextSpan(_span.Value.Start, _span.Value.Start + _length.Value);
                 }
 
                 return _span.Value;

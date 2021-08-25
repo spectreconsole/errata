@@ -6,20 +6,10 @@ namespace Errata.Tests
     public sealed class TextSpanTests
     {
         [Fact]
-        public void Should_Return_Correct_Source_Id()
-        {
-            // Given, When
-            var span = new TextSpan("foo.cs", 13..19);
-
-            // Then
-            span.SourceId.ShouldBe("foo.cs");
-        }
-
-        [Fact]
         public void Should_Return_Correct_Start_Position()
         {
             // Given, When
-            var span = new TextSpan("foo.cs", 13..19);
+            var span = new TextSpan(13, 19);
 
             // Then
             span.Start.ShouldBe(13);
@@ -29,7 +19,7 @@ namespace Errata.Tests
         public void Should_Return_Correct_End_Position()
         {
             // Given, When
-            var span = new TextSpan("foo.cs", 13..19);
+            var span = new TextSpan(13, 19);
 
             // Then
             span.End.ShouldBe(19);
@@ -39,7 +29,7 @@ namespace Errata.Tests
         public void Should_Return_Correct_Length()
         {
             // Given, When
-            var span = new TextSpan("foo.cs", 13..19);
+            var span = new TextSpan(13, 19);
 
             // Then
             span.Length.ShouldBe(6);

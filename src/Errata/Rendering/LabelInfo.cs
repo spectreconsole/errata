@@ -3,21 +3,31 @@ using Spectre.Console;
 
 namespace Errata
 {
+    internal enum LabelKind
+    {
+        SingleLine,
+        MultiLine,
+    }
+
     internal sealed class LabelInfo
     {
         public string SourceId { get; }
         public TextSpan Span { get; }
         public string Message { get; }
-        public Color Color { get; set; }
-        public string? Note { get; set; }
+        public Color Color { get; }
+        public string? Note { get; }
+        public LabelKind Kind { get; }
 
-        public LabelInfo(string sourceId, Range span, string message, Color color, string? note)
+        public LabelInfo(
+            string sourceId, TextSpan span, string message,
+            Color color, string? note, LabelKind kind)
         {
             SourceId = sourceId ?? throw new ArgumentNullException(nameof(sourceId));
-            Span = new TextSpan(sourceId, span);
+            Span = span;
             Message = message ?? throw new ArgumentNullException(nameof(message));
             Color = color;
             Note = note;
+            Kind = kind;
         }
     }
 }

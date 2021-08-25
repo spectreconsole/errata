@@ -52,7 +52,8 @@ namespace Errata.Tests
             var span = new TextLine(0, "HELLO WORLD", 13);
 
             // Then
-            span.Range.ShouldBe(13..24);
+            span.Span.Start.ShouldBe(13);
+            span.Span.End.ShouldBe(24);
         }
     }
 }
