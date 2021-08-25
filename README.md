@@ -39,3 +39,7 @@ After that, running the build is as easy as writing:
 ```
 > dotnet cake
 ```
+
+## Acknowledgement
+
+Inspired by the excellent [Ariadne](https://github.com/zesterer/ariadne) crate.
