@@ -5,19 +5,19 @@ namespace Errata
     internal sealed class LineLabel
     {
         public LabelInfo Label { get; }
-        public TextSpan Span { get; }
+        public TextSpan Columns { get; }
         public int Anchor { get; set; }
 
-        public LineLabel(LabelInfo label, TextSpan span, int anchor)
+        public LineLabel(LabelInfo label, TextSpan columns, int anchor)
         {
             Label = label ?? throw new ArgumentNullException(nameof(label));
-            Span = span;
+            Columns = columns;
             Anchor = anchor;
         }
 
         public void DrawAnchor(ReportBuilder builder)
         {
-            for (var index = Span.Start; index < Span.End; index++)
+            for (var index = Columns.Start; index < Columns.End; index++)
             {
                 if (index == Anchor)
                 {

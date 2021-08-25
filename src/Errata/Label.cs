@@ -94,7 +94,7 @@ namespace Errata
             return this;
         }
 
-        internal TextSpan GetSpan(Source source)
+        internal TextSpan GetSourceSpan(Source source)
         {
             if (_span != null)
             {
@@ -112,7 +112,7 @@ namespace Errata
                 throw new InvalidOperationException("Location info for label has not been set");
             }
 
-            return source.GetSpan(_location.Value, _length.Value);
+            return source.GetSourceSpan(_location.Value, _length.Value);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Errata
                 ctx.Builder.CommitLine();
 
                 // Get the line range and iterate them
-                var lineRange = group.Source.GetLineSpan(group.Span);
+                var lineRange = group.Source.GetLineRange(group.Span);
                 foreach (var lineIndex in lineRange)
                 {
                     // Get the current line and it's labels

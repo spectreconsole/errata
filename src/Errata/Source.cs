@@ -83,14 +83,14 @@ namespace Errata
             return (line, lineIndex, columnIndex);
         }
 
-        internal TextSpan GetLineSpan(TextSpan span)
+        internal LineRange GetLineRange(TextSpan span)
         {
             var start = GetLineOffset(span.Start).LineIndex;
             var end = GetLineOffset(Math.Max(span.Start, span.End)).LineIndex;
-            return new TextSpan(start, end);
+            return new LineRange(start, end);
         }
 
-        internal TextSpan GetSpan(Location location, int length)
+        internal TextSpan GetSourceSpan(Location location, int length)
         {
             var row = location.Row - 1;
             var column = location.Column - 1;

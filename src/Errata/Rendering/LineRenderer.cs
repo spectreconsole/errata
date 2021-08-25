@@ -25,16 +25,16 @@ namespace Errata
             ctx.Builder.Append(" ");
 
             // 🔎 ···········
-            var startMargin = labels[0].Span.Start;
+            var startMargin = labels[0].Columns.Start;
             ctx.Builder.AppendSpaces(startMargin);
 
             var labelIndex = 0;
             var index = startMargin;
             foreach (var label in labels)
             {
-                if (index < label.Span.Start)
+                if (index < label.Columns.Start)
                 {
-                    var diff = label.Span.Start - index;
+                    var diff = label.Columns.Start - index;
                     ctx.Builder.AppendSpaces(diff);
                 }
 
@@ -46,7 +46,7 @@ namespace Errata
                 {
                     // 🔎 ·
                     ctx.Builder.AppendSpace();
-                    index = label.Span.End + 1;
+                    index = label.Columns.End + 1;
                 }
 
                 labelIndex++;
@@ -67,10 +67,10 @@ namespace Errata
                 throw new ArgumentNullException(nameof(labels));
             }
 
-            var startMargin = labels[0].Span.Start;
+            var startMargin = labels[0].Columns.Start;
             var endMargin = labels.Count == 1
                 ? labels[0].Anchor + 2
-                : labels.Last().Span.End + 2;
+                : labels.Last().Columns.End + 2;
 
             var currentLineLabel = labels.Count - 1;
             for (var rowIndex = 0; rowIndex < labels.Count; rowIndex++)
@@ -85,17 +85,17 @@ namespace Errata
                 var index = startMargin;
                 foreach (var label in labels)
                 {
-                    if (index < label.Span.Start)
+                    if (index < label.Columns.Start)
                     {
                         // 🔎 ···········
-                        var diff = label.Span.Start - index;
+                        var diff = label.Columns.Start - index;
                         ctx.Builder.AppendSpaces(diff);
                     }
 
                     if (labelIndex == currentLineLabel)
                     {
                         // 🔎 ···········╰
-                        for (var i = label.Span.Start; i <= label.Anchor; i++)
+                        for (var i = label.Columns.Start; i <= label.Anchor; i++)
                         {
                             if (i == label.Anchor)
                             {
@@ -115,7 +115,7 @@ namespace Errata
                     else
                     {
                         // 🔎 ··|··
-                        for (var i = label.Span.Start; i < label.Span.End; i++)
+                        for (var i = label.Columns.Start; i < label.Columns.End; i++)
                         {
                             if (i == label.Anchor)
                             {
@@ -140,7 +140,7 @@ namespace Errata
                     {
                         // 🔎 ·
                         ctx.Builder.AppendSpace();
-                        index = label.Span.End + 1;
+                        index = label.Columns.End + 1;
                     }
 
                     labelIndex++;

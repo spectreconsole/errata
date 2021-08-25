@@ -37,15 +37,15 @@ namespace Errata
                     groups.Add(source, new List<LabelInfo>());
                 }
 
-                var span = label.GetSpan(source);
+                var span = label.GetSourceSpan(source);
                 var startLine = source.GetLineOffset(span.Start).LineIndex;
                 var endLine = source.GetLineOffset(span.End).LineIndex;
-                var kind = startLine == endLine ? LabelKind.SingleLine : LabelKind.MultiLine;
+                var kind = startLine == endLine ? LabelKind.Inline : LabelKind.MultiLine;
 
                 groups[source].Add(
                     new LabelInfo(
-                        label.SourceId, span, label.Message,
-                        label.Color, label.Note, kind));
+                        label.SourceId, span, label,
+                        new LineRange(startLine, endLine)));
             }
 
             return new SourceGroupCollection(
@@ -61,7 +61,7 @@ namespace Errata
 
             return this.Max(group =>
             {
-                var lineRange = group.Source.GetLineSpan(group.Span);
+                var lineRange = group.Source.GetLineRange(group.Span);
                 var end = lineRange.End == 0 ? 1 : lineRange.End;
                 return (int)(Math.Log10(end) + 1);
             });
