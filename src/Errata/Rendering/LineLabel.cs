@@ -4,9 +4,21 @@ namespace Errata
 {
     internal sealed class LineLabel
     {
+        /// <summary>
+        /// Gets the label information.
+        /// </summary>
         public LabelInfo Label { get; }
+
+        /// <summary>
+        /// Gets the column span for the label in the line.
+        /// </summary>
         public TextSpan Columns { get; }
-        public int Anchor { get; set; }
+
+        /// <summary>
+        /// Gets the anchor column index.
+        /// The anchor is the position a label attaches to a line.
+        /// </summary>
+        public int Anchor { get; }
 
         public LineLabel(LabelInfo label, TextSpan columns, int anchor)
         {
@@ -17,9 +29,9 @@ namespace Errata
 
         public void DrawAnchor(ReportBuilder builder)
         {
-            for (var index = Columns.Start; index < Columns.End; index++)
+            foreach (var column in Columns)
             {
-                if (index == Anchor)
+                if (column == Anchor)
                 {
                     // 🔎 ┬
                     builder.Append(Character.Anchor, Label.Color);

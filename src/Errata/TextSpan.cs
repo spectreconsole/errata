@@ -34,6 +34,7 @@ namespace Errata
             public Enumerator(TextSpan span)
             {
                 _span = span;
+                Current = _span.Start - 1;
             }
 
             public void Dispose()
@@ -42,7 +43,7 @@ namespace Errata
 
             public bool MoveNext()
             {
-                if (Current >= _span.End)
+                if (Current >= _span.End - 1)
                 {
                     return false;
                 }

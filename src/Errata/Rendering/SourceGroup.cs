@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,8 +6,20 @@ namespace Errata
 {
     internal sealed class SourceGroup
     {
+        /// <summary>
+        ///  Gets the source.
+        /// </summary>
         public Source Source { get; }
+
+        /// <summary>
+        /// Gets the span within the source
+        /// where labels appear.
+        /// </summary>
         public TextSpan Span { get; }
+
+        /// <summary>
+        /// Gets all labels for this source.
+        /// </summary>
         public IReadOnlyList<LabelInfo> Labels { get; }
 
         public SourceGroup(Source source, IEnumerable<LabelInfo> labels)
@@ -26,11 +39,11 @@ namespace Errata
             foreach (var label in labels)
             {
                 var anchor = ((label.SourceSpan.Start + label.SourceSpan.End) / 2) - line.Offset;
-                var span = new TextSpan(
+                var columns = new TextSpan(
                     label.SourceSpan.Start - line.Offset,
-                    label.SourceSpan.End - line.Offset);
+                    Math.Min(label.SourceSpan.End - line.Offset, line.Length));
 
-                lineLables.Add(new LineLabel(label, span, anchor));
+                lineLables.Add(new LineLabel(label, columns, anchor));
             }
 
             return new List<LineLabel>(lineLables.OrderBy(l => l.Columns.Start));
