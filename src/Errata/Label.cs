@@ -3,26 +3,56 @@ using Spectre.Console;
 
 namespace Errata
 {
+    /// <summary>
+    /// Represents a label that is part of a diagnostic.
+    /// </summary>
     public sealed class Label
     {
-        private readonly Range? _range;
+        private readonly Range? _span;
         private readonly Location? _location;
         private int? _length;
 
+        /// <summary>
+        /// Gets the source ID.
+        /// </summary>
         public string SourceId { get; }
+
+        /// <summary>
+        /// Gets the label message.
+        /// </summary>
         public string Message { get; }
+
+        /// <summary>
+        /// Gets or sets the label color.
+        /// </summary>
         public Color Color { get; set; }
+
+        /// <summary>
+        /// Gets or sets the label note.
+        /// </summary>
         public string? Note { get; set; }
 
-        public Label(string sourceId, Range range, string message)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Label"/> class.
+        /// </summary>
+        /// <param name="sourceId">The source ID.</param>
+        /// <param name="span">The character span in the source.</param>
+        /// <param name="message">The message.</param>
+        public Label(string sourceId, Range span, string message)
         {
-            _range = range;
+            _span = span;
 
             SourceId = sourceId ?? throw new ArgumentNullException(nameof(sourceId));
             Message = message ?? throw new ArgumentNullException(nameof(message));
             Color = Color.White;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Label"/> class.
+        /// </summary>
+        /// <param name="sourceId">The source ID.</param>
+        /// <param name="location">The source location.</param>
+        /// <param name="message">The message.</param>
         public Label(string sourceId, Location location, string message)
         {
             _location = location;
@@ -33,27 +63,11 @@ namespace Errata
             Color = Color.White;
         }
 
-        internal Range GetSpan(Source source)
-        {
-            if (_range != null)
-            {
-                if (_length != null)
-                {
-                    return _range.Value.Start..(_range.Value.Start.Value + _length.Value);
-                }
-
-                return _range.Value;
-            }
-
-            // Should not occur, but let's make sure anyway
-            if (_location == null || _length == null)
-            {
-                throw new InvalidOperationException("Location info for label has not been set");
-            }
-
-            return source.GetSpan(_location.Value, _length.Value);
-        }
-
+        /// <summary>
+        /// Sets the number of character this label occupies.
+        /// </summary>
+        /// <param name="length">The number of characters this label occupies.</param>
+        /// <returns>The same instance so that multiple calls can be chained.</returns>
         public Label WithLength(int length)
         {
             if (length <= 0)
@@ -65,21 +79,25 @@ namespace Errata
             return this;
         }
 
-        public Label WithColor(Color color)
+        internal Range GetSpan(Source source)
         {
-            Color = color;
-            return this;
-        }
-
-        public Label WithNote(string note)
-        {
-            if (note is null)
+            if (_span != null)
             {
-                throw new ArgumentNullException(nameof(note));
+                if (_length != null)
+                {
+                    return _span.Value.Start..(_span.Value.Start.Value + _length.Value);
+                }
+
+                return _span.Value;
             }
 
-            Note = note;
-            return this;
+            // Should not occur, but let's make sure anyway
+            if (_location == null || _length == null)
+            {
+                throw new InvalidOperationException("Location info for label has not been set");
+            }
+
+            return source.GetSpan(_location.Value, _length.Value);
         }
     }
 }

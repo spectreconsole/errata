@@ -3,8 +3,16 @@ using Spectre.Console;
 
 namespace Errata
 {
+    /// <summary>
+    /// A formatter for diagnostics.
+    /// </summary>
     public class DiagnosticFormatter
     {
+        /// <summary>
+        /// Gets a markup representation of the header for a diagnostic.
+        /// </summary>
+        /// <param name="diagnostic">The diagnostic.</param>
+        /// <returns>A markup representation of the header for a diagnostic.</returns>
         public virtual Markup? Format(Diagnostic diagnostic)
         {
             var builder = new StringBuilder();

@@ -1,25 +1,60 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Errata
 {
+    /// <summary>
+    /// Represents source code.
+    /// </summary>
     public sealed class Source
     {
-        public string Id { get; set; }
-        public string Name { get; }
-        public List<TextLine> Lines { get; set; }
-        public int Length { get; set; }
-        public string Text { get; set; }
+        /// <summary>
+        /// Gets the source ID.
+        /// </summary>
+        public string Id { get; }
 
+        /// <summary>
+        /// Gets the name of the source.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Gets the lines that the source is made up of.
+        /// </summary>
+        public List<TextLine> Lines { get; }
+
+        /// <summary>
+        /// Gets the character length of the source including line breaks.
+        /// </summary>
+        public int Length { get; }
+
+        /// <summary>
+        /// Gets the source text.
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>
+        /// Gets a comparer that can be used to compare instances of <see cref="Source"/>.
+        /// </summary>
         public static IEqualityComparer<Source> Comparer => SourceComparer.Shared;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Source"/> class.
+        /// </summary>
+        /// <param name="id">The source code ID.</param>
+        /// <param name="text">The source code text.</param>
         public Source(string id, string text)
             : this(id, id, text)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Source"/> class.
+        /// </summary>
+        /// <param name="id">The source code ID.</param>
+        /// <param name="name">The name of the source.</param>
+        /// <param name="text">The source code text.</param>
         public Source(string id, string name, string text)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
@@ -29,7 +64,7 @@ namespace Errata
             Text = text ?? string.Empty;
         }
 
-        public (TextLine Line, int LineIndex, int ColumnIndex) GetLineOffset(int offset)
+        internal (TextLine Line, int LineIndex, int ColumnIndex) GetLineOffset(int offset)
         {
             if (offset < 0)
             {
@@ -48,14 +83,14 @@ namespace Errata
             return (line, lineIndex, columnIndex);
         }
 
-        public Range GetLineSpan(Range span)
+        internal Range GetLineSpan(Range span)
         {
             var start = GetLineOffset(span.Start.Value).LineIndex;
             var end = GetLineOffset(Math.Max(span.Start.Value, span.End.Value)).LineIndex;
             return start..end;
         }
 
-        public Range GetSpan(Location location, int length)
+        internal Range GetSpan(Location location, int length)
         {
             var row = location.Row - 1;
             var column = location.Column - 1;
@@ -100,30 +135,6 @@ namespace Errata
             }
 
             throw new InvalidOperationException("Line index could not be found");
-        }
-    }
-
-    internal sealed class SourceComparer : IEqualityComparer<Source>
-    {
-        public static SourceComparer Shared { get; } = new SourceComparer();
-
-        public bool Equals(Source? x, Source? y)
-        {
-            if (x == null && y == null)
-            {
-                return true;
-            }
-            else if (x == null || y == null)
-            {
-                return false;
-            }
-
-            return x.Id.Equals(y.Id, StringComparison.Ordinal);
-        }
-
-        public int GetHashCode([DisallowNull] Source obj)
-        {
-            return obj.Id.GetHashCode();
         }
     }
 }

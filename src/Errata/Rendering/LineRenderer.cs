@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
@@ -6,127 +7,110 @@ namespace Errata
 {
     internal static class LineRenderer
     {
-        public static void DrawAnchors(
-            ReportRendererContext ctx,
-            IReadOnlyList<LineLabel> lineLabels,
-            int lineNumberMaxWidth)
+        public static void DrawAnchors(DiagnosticContext ctx, IReadOnlyList<LineLabel> labels)
         {
             if (ctx is null)
             {
-                throw new System.ArgumentNullException(nameof(ctx));
+                throw new ArgumentNullException(nameof(ctx));
             }
 
-            if (lineLabels is null)
+            if (labels is null)
             {
-                throw new System.ArgumentNullException(nameof(lineLabels));
+                throw new ArgumentNullException(nameof(labels));
             }
 
             // 🔎 ···(dot)
-            ctx.AppendSpaces(lineNumberMaxWidth + 2);
-            ctx.Append(Character.Dot, Color.Grey);
-            ctx.Append(" ");
+            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+            ctx.Builder.Append(Character.Dot, Color.Grey);
+            ctx.Builder.Append(" ");
 
             // 🔎 ···········
-            var startMargin = lineLabels[0].Start;
-            ctx.AppendSpaces(startMargin);
+            var startMargin = labels[0].Start;
+            ctx.Builder.AppendSpaces(startMargin);
 
-            var lineLabelIndex = 0;
+            var labelIndex = 0;
             var index = startMargin;
-            foreach (var lineLabel in lineLabels)
+            foreach (var label in labels)
             {
-                if (index < lineLabel.Start)
+                if (index < label.Start)
                 {
-                    var diff = lineLabel.Start - index;
-                    ctx.AppendSpaces(diff);
+                    var diff = label.Start - index;
+                    ctx.Builder.AppendSpaces(diff);
                 }
 
                 // 🔎 ──┬──
-                for (var i = lineLabel.Start; i < lineLabel.End; i++)
-                {
-                    if (i == lineLabel.Anchor)
-                    {
-                        ctx.Append(Character.Anchor, lineLabel.Label.Color);
-                    }
-                    else
-                    {
-                        // ─
-                        ctx.Append(Character.AnchorHorizontalLine, lineLabel.Label.Color);
-                    }
-                }
+                label.DrawAnchor(ctx.Builder);
 
                 // Not last label?
-                if (lineLabelIndex != lineLabels.Count - 1)
+                if (labelIndex != labels.Count - 1)
                 {
                     // 🔎 ·
-                    ctx.AppendSpace();
-                    index = lineLabel.End + 1;
+                    ctx.Builder.AppendSpace();
+                    index = label.End + 1;
                 }
 
-                lineLabelIndex++;
+                labelIndex++;
             }
 
-            ctx.CommitLine();
+            ctx.Builder.CommitLine();
         }
 
-        public static void DrawLines(
-            ReportRendererContext ctx,
-            IReadOnlyList<LineLabel> lineLabels,
-            int lineNumberMaxWidth)
+        public static void DrawLines(DiagnosticContext ctx, IReadOnlyList<LineLabel> labels)
         {
             if (ctx is null)
             {
-                throw new System.ArgumentNullException(nameof(ctx));
+                throw new ArgumentNullException(nameof(ctx));
             }
 
-            if (lineLabels is null)
+            if (labels is null)
             {
-                throw new System.ArgumentNullException(nameof(lineLabels));
+                throw new ArgumentNullException(nameof(labels));
             }
 
-            var startMargin = lineLabels[0].Start;
-            var endMargin = lineLabels.Count == 1
-                ? lineLabels[0].Anchor + 2
-                : lineLabels.Last().End + 2;
+            var startMargin = labels[0].Start;
+            var endMargin = labels.Count == 1
+                ? labels[0].Anchor + 2
+                : labels.Last().End + 2;
 
-            var currentLineLabel = lineLabels.Count - 1;
-            for (var rowIndex = 0; rowIndex < lineLabels.Count; rowIndex++)
+            var currentLineLabel = labels.Count - 1;
+            for (var rowIndex = 0; rowIndex < labels.Count; rowIndex++)
             {
                 // 🔎 ···(dot)
-                ctx.AppendSpaces(lineNumberMaxWidth + 2);
-                ctx.Append(Character.Dot, Color.Grey);
-                ctx.Append(" ");
-                ctx.AppendSpaces(startMargin);
+                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+                ctx.Builder.Append(Character.Dot, Color.Grey);
+                ctx.Builder.Append(" ");
+                ctx.Builder.AppendSpaces(startMargin);
 
-                var lineLabelIndex = 0;
+                var labelIndex = 0;
                 var index = startMargin;
-                foreach (var label in lineLabels)
+                foreach (var label in labels)
                 {
                     if (index < label.Start)
                     {
                         // 🔎 ···········
                         var diff = label.Start - index;
-                        ctx.AppendSpaces(diff);
+                        ctx.Builder.AppendSpaces(diff);
                     }
 
-                    if (lineLabelIndex == currentLineLabel)
+                    if (labelIndex == currentLineLabel)
                     {
                         // 🔎 ···········╰
                         for (var i = label.Start; i <= label.Anchor; i++)
                         {
                             if (i == label.Anchor)
                             {
-                                ctx.Append(Character.BottomLeftCornerRound, label.Label.Color);
+                                ctx.Builder.Append(Character.BottomLeftCornerRound, label.Label.Color);
                             }
                             else
                             {
-                                ctx.AppendSpace();
+                                ctx.Builder.AppendSpace();
                             }
                         }
 
                         // 🔎 ────── A label message
                         var diff = endMargin - label.Anchor;
-                        ctx.AppendRepeated(Character.HorizontalLine, diff, label.Label.Color);
-                        ctx.Append(" " + label.Label.Message, label.Label.Color);
+                        ctx.Builder.AppendRepeated(Character.HorizontalLine, diff, label.Label.Color);
+                        ctx.Builder.Append(" " + label.Label.Message, label.Label.Color);
                     }
                     else
                     {
@@ -135,34 +119,34 @@ namespace Errata
                         {
                             if (i == label.Anchor)
                             {
-                                if (lineLabelIndex > currentLineLabel)
+                                if (labelIndex > currentLineLabel)
                                 {
-                                    ctx.AppendSpace();
+                                    ctx.Builder.AppendSpace();
                                 }
                                 else
                                 {
-                                    ctx.Append(Character.AnchorVerticalLine, label.Label.Color);
+                                    ctx.Builder.Append(Character.AnchorVerticalLine, label.Label.Color);
                                 }
                             }
                             else
                             {
-                                ctx.AppendSpace();
+                                ctx.Builder.AppendSpace();
                             }
                         }
                     }
 
                     // Not last label?
-                    if (lineLabelIndex != lineLabels.Count - 1)
+                    if (labelIndex != labels.Count - 1)
                     {
                         // 🔎 ·
-                        ctx.AppendSpace();
+                        ctx.Builder.AppendSpace();
                         index = label.End + 1;
                     }
 
-                    lineLabelIndex++;
+                    labelIndex++;
                 }
 
-                ctx.CommitLine();
+                ctx.Builder.CommitLine();
                 currentLineLabel--;
             }
         }

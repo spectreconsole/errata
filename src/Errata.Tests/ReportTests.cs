@@ -23,16 +23,15 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("There are spelling errors")
                             .WithCode("SPELLING001")
                             .WithLabel(new Label("Example.md", 251..270, "Did you mean 'Yabba dabba doo'?").WithColor(Color.Red)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -44,9 +43,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
                             .WithCode("CS0019")
@@ -56,7 +54,7 @@ namespace Errata.Tests
                             .WithLabel(new Label("Program.cs", 309..312, "This is of type 'string'").WithColor(Color.Blue)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -68,9 +66,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Compiler error")
                             .WithCode("C2084")
@@ -80,7 +77,7 @@ namespace Errata.Tests
                             .WithLabel(new Label("Foo.h", 24..38, "See declaration of 'Foo'").WithColor(Color.Blue)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -92,9 +89,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
                             .WithCode("CS0019")
@@ -109,7 +105,7 @@ namespace Errata.Tests
                             .WithLabel(new Label("Program.cs", 174..176, "Code should not contain trailing whitespace").WithColor(Color.Yellow));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -126,9 +122,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("There are spelling errors")
                             .WithCode("SPELLING001")
@@ -137,7 +132,7 @@ namespace Errata.Tests
                                 .WithLength(19)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -149,9 +144,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
                             .WithCode("CS0019")
@@ -164,7 +158,7 @@ namespace Errata.Tests
                                 .WithColor(Color.Blue).WithLength(3)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -176,9 +170,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Compiler error")
                             .WithCode("C2084")
@@ -192,7 +185,7 @@ namespace Errata.Tests
                                 .WithColor(Color.Blue)));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);
@@ -204,9 +197,8 @@ namespace Errata.Tests
                 {
                     // Given
                     var console = new TestConsole().Width(80);
-                    var repository = new EmbeddedResourceRepository();
+                    var report = new Report(new EmbeddedResourceRepository());
 
-                    var report = new Report();
                     report.AddDiagnostic(
                         Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
                             .WithCode("CS0019")
@@ -226,7 +218,7 @@ namespace Errata.Tests
                                 .WithColor(Color.Yellow));
 
                     // When
-                    report.Render(console, repository);
+                    report.Render(console);
 
                     // Then
                     return Verifier.Verify(console.Output);

@@ -1,5 +1,8 @@
 namespace Errata
 {
+    /// <summary>
+    /// Represents a renderable character.
+    /// </summary>
     public enum Character
     {
         /// <summary>

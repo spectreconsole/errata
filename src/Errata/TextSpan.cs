@@ -2,7 +2,7 @@ using System;
 
 namespace Errata
 {
-    public sealed class TextSpan
+    internal sealed class TextSpan
     {
         private readonly Range _range;
 

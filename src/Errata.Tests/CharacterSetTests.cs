@@ -22,7 +22,7 @@ namespace Errata.Tests
             public void Should_Return_Expected_Characters(Character character, char expected)
             {
                 // Given, When
-                var result = CharacterSet.Ansi.Get(character);
+                var result = CharacterSet.Unicode.Get(character);
 
                 // Then
                 result.ShouldBe(expected);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Errata
 {
-    internal static class EnumerableExtensions
+    internal static class IEnumerableExtensions
     {
         public static IEnumerable<(int Index, bool First, bool Last, T Item)> Enumerate<T>(this IEnumerable<T> source)
         {

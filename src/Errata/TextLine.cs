@@ -3,23 +3,56 @@ using System.Collections.Generic;
 
 namespace Errata
 {
+    /// <summary>
+    /// Represents a text line.
+    /// </summary>
     public sealed class TextLine
     {
-        public int Index { get; set; }
-        public string Text { get; set; }
-        public int Offset { get; set; }
-        public int Length { get; set; }
+        /// <summary>
+        /// Gets the line index.
+        /// </summary>
+        public int Index { get; }
 
-        public Range Range => Offset..(Offset + Length);
+        /// <summary>
+        /// Gets the line offset.
+        /// </summary>
+        public int Offset { get; }
 
+        /// <summary>
+        /// Gets the line text.
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>
+        /// Gets the line length.
+        /// </summary>
+        public int Length { get; }
+
+        /// <summary>
+        /// Gets the character span for the line.
+        /// </summary>
+        public Range Range { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextLine"/> class.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <param name="text">The line text.</param>
+        /// <param name="offset">The line offset.</param>
         public TextLine(int index, string text, int offset)
         {
             Index = index;
             Text = text ?? string.Empty;
             Offset = offset;
             Length = Text.Length;
+            Range = Offset..(Offset + Length);
         }
 
+        /// <summary>
+        /// Splits the provided text into a list of <see cref="TextLine"/>.
+        /// </summary>
+        /// <param name="text">The text to split.</param>
+        /// <returns>A list of <see cref="TextLine"/>.</returns>
         public static List<TextLine> Split(string text)
         {
             if (text is null)

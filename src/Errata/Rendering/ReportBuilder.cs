@@ -6,24 +6,21 @@ using Spectre.Console.Rendering;
 
 namespace Errata
 {
-    internal sealed class ReportRendererContext
+    internal sealed class ReportBuilder
     {
         private readonly IAnsiConsole _console;
         private readonly List<Segment> _buffer;
         private readonly List<SegmentLine> _lines;
 
-        public CharacterSet CharacterSet { get; }
-        public DiagnosticFormatter Formatter { get; }
+        public CharacterSet Characters { get; }
 
-        public ReportRendererContext(IAnsiConsole console, ReportSettings? settings)
+        public ReportBuilder(IAnsiConsole console, CharacterSet characters)
         {
             _console = console ?? throw new ArgumentNullException(nameof(console));
             _buffer = new List<Segment>();
             _lines = new List<SegmentLine>();
 
-            settings ??= new ReportSettings();
-            Formatter = settings.Formatter ?? new DiagnosticFormatter();
-            CharacterSet = settings.Characters ??= CharacterSet.Create(_console);
+            Characters = characters;
         }
 
         public void AppendMarkup(Markup markup)
@@ -34,7 +31,7 @@ namespace Errata
 
         public void Append(Character character, Color? color = null, Decoration? decoration = null)
         {
-            Append(CharacterSet.Get(character), color, decoration);
+            Append(Characters.Get(character), color, decoration);
         }
 
         public void Append(string text, Color? color = null, Decoration? decoration = null)
@@ -54,7 +51,7 @@ namespace Errata
 
         public void AppendRepeated(Character character, int count, Color? color = null)
         {
-            AppendRepeated(CharacterSet.Get(character), count, color);
+            AppendRepeated(Characters.Get(character), count, color);
         }
 
         public void AppendRepeated(char character, int count, Color? color = null)

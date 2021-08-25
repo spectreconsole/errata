@@ -3,23 +3,81 @@ using Spectre.Console;
 
 namespace Errata
 {
+    /// <summary>
+    /// Represents a character set.
+    /// </summary>
     public abstract class CharacterSet
     {
-        public virtual char Colon { get; set; } = ':';
-        public virtual char TopLeftCornerHard { get; set; } = '┌';
-        public virtual char BottomLeftCornerHard { get; set; } = '└';
-        public virtual char LeftConnector { get; set; } = '├';
-        public virtual char HorizontalLine { get; set; } = '─';
-        public virtual char VerticalLine { get; set; } = '│';
-        public virtual char Dot { get; set; } = '·';
-        public virtual char Anchor { get; set; } = '┬';
-        public virtual char AnchorHorizontalLine { get; set; } = '─';
-        public virtual char AnchorVerticalLine { get; set; } = '│';
-        public virtual char BottomLeftCornerRound { get; set; } = '╰';
+        /// <summary>
+        /// Gets a renderable representation of `:`.
+        /// </summary>
+        public virtual char Colon { get; } = ':';
 
-        public static AnsiCharacterSet Ansi => AnsiCharacterSet.Shared;
+        /// <summary>
+        /// Gets a renderable representation of `┌`.
+        /// </summary>
+        public virtual char TopLeftCornerHard { get; } = '┌';
+
+        /// <summary>
+        /// Gets a renderable representation of `└`.
+        /// </summary>
+        public virtual char BottomLeftCornerHard { get; } = '└';
+
+        /// <summary>
+        /// Gets a renderable representation of `├`.
+        /// </summary>
+        public virtual char LeftConnector { get; } = '├';
+
+        /// <summary>
+        /// Gets a renderable representation of `─`.
+        /// </summary>
+        public virtual char HorizontalLine { get; } = '─';
+
+        /// <summary>
+        /// Gets a renderable representation of `│`.
+        /// </summary>
+        public virtual char VerticalLine { get; } = '│';
+
+        /// <summary>
+        /// Gets a renderable representation of `·`.
+        /// </summary>
+        public virtual char Dot { get; } = '·';
+
+        /// <summary>
+        /// Gets a renderable representation of `┬`.
+        /// </summary>
+        public virtual char Anchor { get; } = '┬';
+
+        /// <summary>
+        /// Gets a renderable representation of `─`.
+        /// </summary>
+        public virtual char AnchorHorizontalLine { get; } = '─';
+
+        /// <summary>
+        /// Gets a renderable representation of `│`.
+        /// </summary>
+        public virtual char AnchorVerticalLine { get; } = '│';
+
+        /// <summary>
+        /// Gets a renderable representation of `╰`.
+        /// </summary>
+        public virtual char BottomLeftCornerRound { get; } = '╰';
+
+        /// <summary>
+        /// Gets a Unicode compatible character set.
+        /// </summary>
+        public static UnicodeCharacterSet Unicode => UnicodeCharacterSet.Shared;
+
+        /// <summary>
+        /// Gets an ASCII compatible character set.
+        /// </summary>
         public static AsciiCharacterSet Ascii => AsciiCharacterSet.Shared;
 
+        /// <summary>
+        /// Gets a renderable representation of a <see cref="Character"/>.
+        /// </summary>
+        /// <param name="character">The character to get a renderable representation of.</param>
+        /// <returns>A renderable representation of a <see cref="Character"/>.</returns>
         public char Get(Character character)
         {
             return character switch
@@ -39,6 +97,11 @@ namespace Errata
             };
         }
 
+        /// <summary>
+        /// Creates a <see cref="CharacterSet"/> that is compatible with the specified <see cref="IAnsiConsole"/>.
+        /// </summary>
+        /// <param name="console">The console.</param>
+        /// <returns>A <see cref="CharacterSet"/> that is compatible with the specified <see cref="IAnsiConsole"/>.</returns>
         public static CharacterSet Create(IAnsiConsole console)
         {
             if (console is null)
@@ -47,22 +110,33 @@ namespace Errata
             }
 
             return console.Profile.Capabilities.Unicode
-                ? AnsiCharacterSet.Shared
+                ? UnicodeCharacterSet.Shared
                 : AsciiCharacterSet.Shared;
         }
     }
 
-    public class AnsiCharacterSet : CharacterSet
+    /// <summary>
+    /// Represents a Unicode compatible character set.
+    /// </summary>
+    public class UnicodeCharacterSet : CharacterSet
     {
-        internal static AnsiCharacterSet Shared { get; } = new AnsiCharacterSet();
+        internal static UnicodeCharacterSet Shared { get; } = new UnicodeCharacterSet();
     }
 
+    /// <summary>
+    /// Represents an ASCII compatible character set.
+    /// </summary>
     public class AsciiCharacterSet : CharacterSet
     {
         internal static AsciiCharacterSet Shared { get; } = new AsciiCharacterSet();
 
-        public override char Anchor { get; set; } = '^';
-        public override char AnchorHorizontalLine { get; set; } = '^';
-        public override char BottomLeftCornerRound { get; set; } = '└';
+        /// <inheritdoc/>
+        public override char Anchor { get; } = '^';
+
+        /// <inheritdoc/>
+        public override char AnchorHorizontalLine { get; } = '^';
+
+        /// <inheritdoc/>
+        public override char BottomLeftCornerRound { get; } = '└';
     }
 }

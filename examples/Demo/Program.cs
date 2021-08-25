@@ -8,8 +8,8 @@ namespace Example
         public static void Main()
         {
             // Create a new report
-            var report = new Report();
-            var repository = new EmbeddedResourceRepository(typeof(Program).Assembly);
+            var report = new Report(
+                new EmbeddedResourceRepository(typeof(Program).Assembly));
 
             // C#
             report.AddDiagnostic(
@@ -53,7 +53,7 @@ namespace Example
                         .WithColor(Color.Blue)));
 
             // Render the report
-            report.Render(AnsiConsole.Console, repository);
+            report.Render(AnsiConsole.Console);
         }
     }
 }
