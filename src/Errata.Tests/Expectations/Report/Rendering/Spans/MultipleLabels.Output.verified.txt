@@ -3,9 +3,11 @@ NOTE: Try changing the type
     ┌─[Program.cs]
     │
  15 │             var qux = foo / bar;
-    ·                       ─┬─ ┬ ─┬─
-    ·                        │  │  ╰──── This is of type 'string'
-    ·                        │  ╰─────── Division is not possible    
-    ·                        ╰────────── This is of type 'int'      
+    ·                       ─┬─ ┬ ─┬─ 
+    ·                        ╰──────── This is of type 'int'
+    ·                           │  │  
+    ·                           ╰───── Division is not possible
+    ·                              │  
+    ·                              ╰── This is of type 'string'
     │
     └─

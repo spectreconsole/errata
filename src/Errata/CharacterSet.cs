@@ -131,10 +131,10 @@ namespace Errata
         internal static AsciiCharacterSet Shared { get; } = new AsciiCharacterSet();
 
         /// <inheritdoc/>
-        public override char Anchor { get; } = '^';
+        public override char Anchor { get; } = '┬';
 
         /// <inheritdoc/>
-        public override char AnchorHorizontalLine { get; } = '^';
+        public override char AnchorHorizontalLine { get; } = '─';
 
         /// <inheritdoc/>
         public override char BottomLeftCornerRound { get; } = '└';

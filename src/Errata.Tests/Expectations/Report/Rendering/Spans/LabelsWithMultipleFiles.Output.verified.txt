@@ -4,7 +4,8 @@ NOTE: Overloaded member not found
    │
  2 │ void Foo::bar(float)
    ·      ───────┬───────
-   ·             ╰──  'void Foo::bar(float)': overloaded member function not found in 'Foo'
+   ·             ╰───────  'void Foo::bar(float)': overloaded member function not found in 'Foo'
+   │
    ·
    · NOTE: See declaration of 'Foo' in Foo.h
    ·
@@ -12,6 +13,6 @@ NOTE: Overloaded member not found
    │
  3 │     void bar(int);
    ·     ───────┬──────
-   ·            ╰── See declaration of 'Foo'
+   ·            ╰────── See declaration of 'Foo'
    │
    └─

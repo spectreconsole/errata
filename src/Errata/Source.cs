@@ -106,13 +106,6 @@ namespace Errata
                 throw new ArgumentOutOfRangeException(nameof(column), "label column cannot start at the end of the line");
             }
 
-            // Trying to grab text outide of the line?
-            if (column + length > line.Length)
-            {
-                // Adjust the length
-                length = line.Length - column;
-            }
-
             return new TextSpan(line.Offset + column, line.Offset + column + length);
         }
 

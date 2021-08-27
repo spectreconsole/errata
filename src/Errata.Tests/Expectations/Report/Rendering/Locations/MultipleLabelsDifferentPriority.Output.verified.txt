@@ -4,10 +4,10 @@ NOTE: Try changing the type
     │
  15 │             var qux = foo / bar;
     ·                       ─┬─ ┬ ─┬─ 
+    ·                        │  │  ╰── This is of type 'string'
+    ·                        │  │     
+    ·                        │  ╰───── Division is not possible
+    ·                        │        
     ·                        ╰──────── This is of type 'int'
-    ·                           │  │  
-    ·                           ╰───── Division is not possible
-    ·                              │  
-    ·                              ╰── This is of type 'string'
     │
     └─

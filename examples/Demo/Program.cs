@@ -18,17 +18,21 @@ namespace Example
                     .WithNote("Try changing the type")
                     .WithLabel(new Label("Demo/Files/Program.cs", new Location(15, 23), "This is of type 'int'")
                         .WithLength(3)
+                        .WithPriority(1)
                         .WithColor(Color.Yellow))
                     .WithLabel(new Label("Demo/Files/Program.cs", new Location(15, 27), "Division is not possible")
+                        .WithPriority(3)
                         .WithColor(Color.Red))
                     .WithLabel(new Label("Demo/Files/Program.cs", new Location(15, 29), "This is of type 'string'")
                         .WithLength(3)
+                        .WithPriority(2)
                         .WithColor(Color.Blue)));
 
             report.AddDiagnostic(
-                Diagnostic.Warning("Fix formatting")
+                Diagnostic.Info("Fix formatting")
                     .WithCode("IDE0055"))
-                    .WithLabel(new Label("Demo/Files/Program.cs", 174..176, "Code should not contain trailing whitespace").WithColor(Color.Yellow));
+                    .WithLabel(new Label("Demo/Files/Program.cs", 174..176, "Code should not contain trailing whitespace")
+                        .WithColor(Color.Blue));
 
             // Markdown
             report.AddDiagnostic(

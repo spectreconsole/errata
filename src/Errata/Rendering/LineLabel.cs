@@ -20,11 +20,21 @@ namespace Errata
         /// </summary>
         public int Anchor { get; }
 
-        public LineLabel(LabelInfo label, TextSpan columns, int anchor)
+        public int Priority => Label.Priority;
+
+        /// <summary>
+        /// Gets a value indicating whether or not the message should be rendered for this line.
+        /// </summary>
+        public bool ShouldRenderMessage { get; }
+
+        public bool IsMultiLine => Label.Kind == LabelKind.MultiLine;
+
+        public LineLabel(LabelInfo label, TextSpan columns, int anchor, bool renderMessage)
         {
             Label = label ?? throw new ArgumentNullException(nameof(label));
             Columns = columns;
             Anchor = anchor;
+            ShouldRenderMessage = renderMessage;
         }
 
         public void DrawAnchor(ReportBuilder builder)

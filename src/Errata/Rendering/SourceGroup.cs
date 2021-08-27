@@ -34,7 +34,8 @@ namespace Errata
 
         public IReadOnlyList<LineLabel> GetLabelsForLine(TextLine line)
         {
-            var lineLables = new List<LineLabel>();
+            var result = new List<LineLabel>();
+
             var labels = Labels.Where(label => label.SourceSpan.Start >= line.Span.Start && label.SourceSpan.End <= line.Span.End);
             foreach (var label in labels)
             {
@@ -43,10 +44,14 @@ namespace Errata
                     label.SourceSpan.Start - line.Offset,
                     Math.Min(label.SourceSpan.End - line.Offset, line.Length));
 
-                lineLables.Add(new LineLabel(label, columns, anchor));
+                result.Add(new LineLabel(label, columns, anchor, renderMessage: true));
             }
 
-            return new List<LineLabel>(lineLables.OrderBy(l => l.Columns.Start));
+            return new List<LineLabel>(
+                result
+                    .Where(l => !l.IsMultiLine)
+                    .OrderBy(l => l.Priority)
+                    .ThenBy(l => l.Columns.Start));
         }
     }
 }

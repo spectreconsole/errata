@@ -33,6 +33,7 @@ namespace Errata
         public Color? Color => Label.Color;
         public string Message => Label.Message;
         public string? Note => Label.Note;
+        public int Priority => Label.Priority;
 
         public LabelInfo(
             string sourceId, TextSpan sourceSpan, Label label,

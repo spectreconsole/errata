@@ -6,17 +6,8 @@ NOTE: Try changing the type
     ·                       ─┬─ ┬ ─┬─ 
     ·                        ╰──────── This is of type 'int'
     ·                           │  │  
+    ·                           │  ╰── This is of type 'string'
+    ·                           │     
     ·                           ╰───── Division is not possible
-    ·                              │  
-    ·                              ╰── This is of type 'string'
     │
     └─
- 
-Warning [IDE0055]: Fix formatting
-   ┌─[Program.cs]
-   │
- 9 │     public static class Program  
-   ·                                ─┬
-   ·                                 ╰ Code should not contain trailing whitespace
-   │
-   └─

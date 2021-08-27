@@ -32,8 +32,8 @@ namespace Errata.Tests
         public sealed class Ascii
         {
             [Theory]
-            [InlineData(Character.Anchor, '^')]
-            [InlineData(Character.AnchorHorizontalLine, '^')]
+            [InlineData(Character.Anchor, '┬')]
+            [InlineData(Character.AnchorHorizontalLine, '─')]
             [InlineData(Character.AnchorVerticalLine, '│')]
             [InlineData(Character.BottomLeftCornerHard, '└')]
             [InlineData(Character.BottomLeftCornerRound, '└')]

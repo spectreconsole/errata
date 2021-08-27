@@ -24,6 +24,11 @@ namespace Errata
         /// </summary>
         public int Length => End - Start;
 
+        /// <summary>
+        /// Gets the last offset in the span.
+        /// </summary>
+        public int LastOffset => Math.Max(Start, End - 1);
+
         private sealed class Enumerator : IEnumerator<int>
         {
             private readonly TextSpan _span;
@@ -112,7 +117,7 @@ namespace Errata
                 throw new ArgumentOutOfRangeException(nameof(offset), "Offset must be equal or greater than zero (0)");
             }
 
-            return Start <= offset && End > offset;
+            return Start <= offset && LastOffset >= offset;
         }
 
         /// <inheritdoc/>

@@ -33,6 +33,11 @@ namespace Errata
         public string? Note { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        public int Priority { get; set; } = 0;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Label"/> class.
         /// </summary>
         /// <param name="sourceId">The source ID.</param>
