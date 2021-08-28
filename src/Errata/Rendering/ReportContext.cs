@@ -12,6 +12,7 @@ namespace Errata
         public ReportBuilder Builder { get; }
         public CharacterSet Characters { get; }
         public DiagnosticFormatter Formatter { get; }
+        public bool Compact { get; }
 
         public ReportContext(IAnsiConsole console, ISourceRepository repository, ReportSettings? settings)
         {
@@ -22,6 +23,7 @@ namespace Errata
             Characters = _settings.Characters ??= CharacterSet.Create(_console);
             Formatter = _settings.Formatter ?? new DiagnosticFormatter();
             Builder = new ReportBuilder(_console, Characters);
+            Compact = _settings.Compact;
         }
 
         public DiagnosticContext CreateDiagnosticContext(Diagnostic diagnostic)

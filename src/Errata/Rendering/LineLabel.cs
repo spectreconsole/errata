@@ -1,13 +1,11 @@
 using System;
+using Spectre.Console;
 
 namespace Errata
 {
     internal sealed class LineLabel
     {
-        /// <summary>
-        /// Gets the label information.
-        /// </summary>
-        public LabelInfo Label { get; }
+        private readonly LabelInfo _label;
 
         /// <summary>
         /// Gets the column span for the label in the line.
@@ -20,18 +18,21 @@ namespace Errata
         /// </summary>
         public int Anchor { get; }
 
-        public int Priority => Label.Priority;
-
         /// <summary>
         /// Gets a value indicating whether or not the message should be rendered for this line.
         /// </summary>
         public bool ShouldRenderMessage { get; }
 
-        public bool IsMultiLine => Label.Kind == LabelKind.MultiLine;
+        public int Priority => _label.Priority;
+        public bool IsMultiLine => _label.Kind == LabelKind.MultiLine;
+        public TextSpan SourceSpan => _label.SourceSpan;
+        public string Message => _label.Message;
+        public Color? Color => _label.Color;
 
         public LineLabel(LabelInfo label, TextSpan columns, int anchor, bool renderMessage)
         {
-            Label = label ?? throw new ArgumentNullException(nameof(label));
+            _label = label ?? throw new ArgumentNullException(nameof(label));
+
             Columns = columns;
             Anchor = anchor;
             ShouldRenderMessage = renderMessage;
@@ -44,12 +45,12 @@ namespace Errata
                 if (column == Anchor)
                 {
                     // 🔎 ┬
-                    builder.Append(Character.Anchor, Label.Color);
+                    builder.Append(Character.Anchor, _label.Color);
                 }
                 else
                 {
                     // 🔎 ─
-                    builder.Append(Character.AnchorHorizontalLine, Label.Color);
+                    builder.Append(Character.AnchorHorizontalLine, _label.Color);
                 }
             }
         }

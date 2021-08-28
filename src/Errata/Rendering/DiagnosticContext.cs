@@ -8,6 +8,8 @@ namespace Errata
 
         public ReportBuilder Builder => _ctx.Builder;
         public DiagnosticFormatter Formatter => _ctx.Formatter;
+        public CharacterSet Characters => _ctx.Characters;
+        public bool Compact => _ctx.Compact;
 
         public Diagnostic Diagnostic { get; }
         public SourceGroupCollection Groups { get; }

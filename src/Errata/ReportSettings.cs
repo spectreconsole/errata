@@ -14,5 +14,11 @@ namespace Errata
         /// Gets or sets the diagnostic formatter.
         /// </summary>
         public DiagnosticFormatter? Formatter { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not
+        /// the report should be rendered in compact mode.
+        /// </summary>
+        public bool Compact { get; set; }
     }
 }

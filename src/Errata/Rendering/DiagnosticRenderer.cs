@@ -69,16 +69,8 @@ namespace Errata
                         continue;
                     }
 
-                    // Write text line with margin
-                    RenderMargin(ctx, line, true);
-                    ctx.Builder.AppendSpace();
-                    foreach (var (column, character) in line.Text.EnumerateWithIndex())
-                    {
-                        var highlight = GetHighlightColor(labels, line, column);
-                        ctx.Builder.Append(character, highlight);
-                    }
-
-                    ctx.Builder.CommitLine();
+                    // Write text line
+                    RenderText(ctx, line, labels);
 
                     // Write labels
                     foreach (var (row, label) in labels.EnumerateWithIndex())
@@ -94,7 +86,7 @@ namespace Errata
                         {
                             // 🔎 The label message
                             ctx.Builder.AppendSpace();
-                            ctx.Builder.Append(label.Label.Message, label.Label.Color);
+                            ctx.Builder.Append(label.Message, label.Color);
                         }
 
                         // 🔎 \n
@@ -103,16 +95,17 @@ namespace Errata
 
                     if (!lastLine)
                     {
-                        // 🔎 ···│\n
+                        // 🔎 ···(dot)\n
                         ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
-                        ctx.Builder.Append(Character.VerticalLine, Color.Grey);
+                        ctx.Builder.Append(Character.Dot, Color.Grey);
                         ctx.Builder.CommitLine();
                     }
                 }
 
-                // 🔎 ···│\n
+                // 🔎 ···(separator)\n
+                var separator = last ? Character.VerticalLine : Character.Dot;
                 ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
-                ctx.Builder.Append(Character.VerticalLine, Color.Grey);
+                ctx.Builder.Append(separator, Color.Grey);
                 ctx.Builder.CommitLine();
 
                 // Got labels with notes?
@@ -121,14 +114,6 @@ namespace Errata
                 {
                     foreach (var (_, firstLabel, lastLabel, labelWithNote) in labelsWithNotes.Enumerate())
                     {
-                        if (firstLabel)
-                        {
-                            // 🔎 ···(dot)\n
-                            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
-                            ctx.Builder.Append(Character.Dot, Color.Grey);
-                            ctx.Builder.CommitLine();
-                        }
-
                         // Got a note?
                         if (!string.IsNullOrWhiteSpace(labelWithNote.Note))
                         {
@@ -137,15 +122,15 @@ namespace Errata
                             ctx.Builder.Append(Character.Dot, Color.Grey);
                             ctx.Builder.AppendSpace();
                             ctx.Builder.Append("NOTE: ", Color.Aqua);
-                            ctx.Builder.Append(labelWithNote.Note ?? string.Empty);
+                            ctx.Builder.Append(labelWithNote.Note);
                             ctx.Builder.CommitLine();
                         }
 
                         if (lastLabel)
                         {
-                            // 🔎 ···(dot)\n
+                            // 🔎 ···│\n
                             ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
-                            ctx.Builder.Append(Character.Dot, Color.Grey);
+                            ctx.Builder.Append(Character.VerticalLine, Color.Grey);
                             ctx.Builder.CommitLine();
                         }
                     }
@@ -162,6 +147,80 @@ namespace Errata
             }
         }
 
+        private static void RenderText(DiagnosticContext ctx, TextLine line, IReadOnlyList<LineLabel> labels)
+        {
+            RenderMargin(ctx, line, true);
+            ctx.Builder.AppendSpace();
+            foreach (var (column, character) in line.Text.EnumerateWithIndex())
+            {
+                var color = GetHighlightColor(labels, line, column);
+                ctx.Builder.Append(character, color);
+            }
+
+            ctx.Builder.CommitLine();
+        }
+
+        private static void RenderVerticalLines(
+            DiagnosticContext ctx, TextLine line,
+            IReadOnlyList<LineLabel> labels, int row)
+        {
+            var result = new (char, Color?)[line.Text.Length];
+            var crucial = false;
+
+            for (var col = 0; col < line.Text.Length; col++)
+            {
+                var anchor = GetAnchor(labels, col, row);
+                var underline = GetHighlightColor(labels, line, col);
+
+                if (row != 0)
+                {
+                    underline = null;
+                }
+
+                if (anchor != null)
+                {
+                    if (underline != null)
+                    {
+                        // 🔎 ┬
+                        result[col] = (ctx.Characters.Get(Character.Anchor), underline);
+                        crucial = true;
+                    }
+                    else
+                    {
+                        // 🔎 │
+                        result[col] = (ctx.Characters.Get(Character.AnchorVerticalLine), anchor.Color);
+                    }
+                }
+                else if (underline != null)
+                {
+                    // 🔎 ─
+                    result[col] = (ctx.Characters.Get(Character.AnchorHorizontalLine), underline);
+                    crucial = true;
+                }
+                else
+                {
+                    // 🔎 ·
+                    result[col] = (' ', null);
+                }
+            }
+
+            // Rendering compact reports and
+            // nothing crucial was detected for the line?
+            if (ctx.Compact && !crucial)
+            {
+                return;
+            }
+
+            RenderMargin(ctx, line, false);
+            ctx.Builder.AppendSpace();
+            foreach (var (character, color) in result)
+            {
+                ctx.Builder.Append(character, color);
+            }
+
+            ctx.Builder.CommitLine();
+        }
+
         private static void RenderHorizontalLines(
             DiagnosticContext ctx, TextLine line,
             IReadOnlyList<LineLabel> labels,
@@ -172,86 +231,40 @@ namespace Errata
 
             for (var col = 0; col < line.Text.Length; col++)
             {
-                var vbar = GetVerticalLine(labels, col, row);
-                var hbar = !string.IsNullOrWhiteSpace(label.Label.Message)
+                var anchor = GetAnchor(labels, col, row);
+                var hasHorizontalBar = !string.IsNullOrWhiteSpace(label.Message)
                     && label.ShouldRenderMessage
                     && col > label.Anchor;
 
-                if (col == label.Anchor && !string.IsNullOrWhiteSpace(label.Label.Message))
+                if (col == label.Anchor && !string.IsNullOrWhiteSpace(label.Message))
                 {
                     // 🔎 ╰
-                    ctx.Builder.Append(Character.BottomLeftCornerRound, label.Label.Color);
+                    ctx.Builder.Append(Character.BottomLeftCornerRound, label.Color);
                 }
-                else if (vbar != null && (col != label.Anchor || !string.IsNullOrWhiteSpace(label.Label.Message)))
+                else if (anchor != null && (col != label.Anchor || !string.IsNullOrWhiteSpace(label.Message)))
                 {
-                    if (hbar)
+                    if (hasHorizontalBar)
                     {
                         // 🔎 ─
-                        ctx.Builder.Append(Character.HorizontalLine, label.Label.Color);
+                        ctx.Builder.Append(Character.HorizontalLine, label.Color);
                     }
                     else
                     {
                         // 🔎 │
-                        ctx.Builder.Append(Character.VerticalLine, vbar.Label.Color);
+                        ctx.Builder.Append(Character.VerticalLine, anchor.Color);
                     }
                 }
-                else if (hbar)
+                else if (hasHorizontalBar)
                 {
                     // 🔎 ─
-                    ctx.Builder.Append(Character.HorizontalLine, label.Label.Color);
+                    ctx.Builder.Append(Character.HorizontalLine, label.Color);
                 }
                 else
                 {
                     // 🔎 ·
-                    ctx.Builder.Append(' ', label.Label.Color);
+                    ctx.Builder.Append(' ', label.Color);
                 }
             }
-        }
-
-        private static void RenderVerticalLines(
-            DiagnosticContext ctx, TextLine line,
-            IReadOnlyList<LineLabel> labels, int row)
-        {
-            // Draw vertical lines
-            RenderMargin(ctx, line, false);
-            ctx.Builder.AppendSpace();
-
-            for (var col = 0; col < line.Text.Length; col++)
-            {
-                var vbar = GetVerticalLine(labels, col, row);
-                var underline = GetUnderlineColor(labels, line, col);
-
-                if (row != 0)
-                {
-                    underline = null;
-                }
-
-                if (vbar != null)
-                {
-                    if (underline != null)
-                    {
-                        // 🔎 ┬
-                        ctx.Builder.Append(Character.Anchor, underline);
-                    }
-                    else
-                    {
-                        // 🔎 │
-                        ctx.Builder.Append(Character.AnchorVerticalLine, vbar.Label.Color);
-                    }
-                }
-                else if (underline != null)
-                {
-                    // 🔎 ─
-                    ctx.Builder.Append(Character.AnchorHorizontalLine, underline);
-                }
-                else
-                {
-                    // 🔎 ·
-                    ctx.Builder.Append(' ');
-                }
-            }
-
-            ctx.Builder.CommitLine();
         }
 
         private static void RenderMargin(
@@ -275,41 +288,30 @@ namespace Errata
             }
         }
 
-        private static LineLabel? GetVerticalLine(IEnumerable<LineLabel> labels, int column, int row)
+        private static LineLabel? GetAnchor(IEnumerable<LineLabel> labels, int column, int row)
         {
             foreach (var (index, label) in labels.EnumerateWithIndex())
             {
-                if (string.IsNullOrWhiteSpace(label.Label.Message))
+                if (string.IsNullOrWhiteSpace(label.Message))
                 {
                     continue;
                 }
 
-                if (label.Anchor == column)
+                if (label.Anchor == column && row <= index)
                 {
-                    if ((row <= index && !label.IsMultiLine) || (row <= index && label.IsMultiLine))
-                    {
-                        return label;
-                    }
+                    return label;
                 }
             }
 
             return null;
         }
 
-        private static Color? GetUnderlineColor(IEnumerable<LineLabel> labels, TextLine line, int column)
-        {
-            return labels.Where(label => !label.IsMultiLine && label.Label.SourceSpan.Contains(line.Offset + column))
-                .OrderBy(l => l.Priority)
-                .ThenBy(l => l.Columns.Start)
-                .FirstOrDefault()?.Label?.Color;
-        }
-
         private static Color? GetHighlightColor(IEnumerable<LineLabel> labels, TextLine line, int column)
         {
-            return labels.Where(label => label.Label.SourceSpan.Contains(line.Offset + column))
+            return labels.Where(label => label.SourceSpan.Contains(line.Offset + column))
                 .OrderBy(l => l.Priority)
                 .ThenBy(l => l.Columns.Start)
-                .FirstOrDefault()?.Label?.Color;
+                .FirstOrDefault()?.Color;
         }
     }
 }

@@ -9,7 +9,8 @@ namespace Example
         {
             // Create a new report
             var report = new Report(
-                new EmbeddedResourceRepository(typeof(Program).Assembly));
+                new EmbeddedResourceRepository(
+                    typeof(Program).Assembly));
 
             // C#
             report.AddDiagnostic(
