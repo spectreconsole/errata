@@ -52,7 +52,13 @@ namespace Errata
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Row, Column);
+            unchecked
+            {
+                var hash = (int)2166136261;
+                hash = (hash * 16777619) ^ Row.GetHashCode();
+                hash = (hash * 16777619) ^ Column.GetHashCode();
+                return hash;
+            }
         }
 
         /// <summary>

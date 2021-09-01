@@ -37,6 +37,7 @@ namespace Errata
         /// </summary>
         public int Priority { get; set; } = 0;
 
+#if NET5_0_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="Label"/> class.
         /// </summary>
@@ -51,6 +52,7 @@ namespace Errata
             Message = message ?? throw new ArgumentNullException(nameof(message));
             Color = Color.White;
         }
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Label"/> class.

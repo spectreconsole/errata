@@ -79,6 +79,7 @@ namespace Errata
             End = end;
         }
 
+#if NET5_0_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="TextSpan"/> struct.
         /// </summary>
@@ -103,6 +104,7 @@ namespace Errata
             Start = range.Start.Value;
             End = range.End.Value;
         }
+#endif
 
         /// <summary>
         /// Determines whether or not the specified offset
@@ -147,7 +149,13 @@ namespace Errata
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Start, End);
+            unchecked
+            {
+                var hash = (int)2166136261;
+                hash = (hash * 16777619) ^ Start.GetHashCode();
+                hash = (hash * 16777619) ^ End.GetHashCode();
+                return hash;
+            }
         }
 
         /// <inheritdoc/>

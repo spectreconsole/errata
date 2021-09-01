@@ -1,3 +1,4 @@
+#if NET5_0_OR_GREATER
 using System;
 
 namespace Errata
@@ -10,3 +11,4 @@ namespace Errata
         }
     }
 }
+#endif

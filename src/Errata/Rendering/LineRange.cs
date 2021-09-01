@@ -88,7 +88,13 @@ namespace Errata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Start, End);
+            unchecked
+            {
+                var hash = (int)2166136261;
+                hash = (hash * 16777619) ^ Start.GetHashCode();
+                hash = (hash * 16777619) ^ End.GetHashCode();
+                return hash;
+            }
         }
 
         public override string? ToString()
