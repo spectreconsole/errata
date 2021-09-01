@@ -38,11 +38,6 @@ namespace Errata
                 throw new ArgumentNullException(nameof(label));
             }
 
-            if (note is null)
-            {
-                throw new ArgumentNullException(nameof(note));
-            }
-
             label.Note = note;
             return label;
         }
