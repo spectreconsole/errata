@@ -101,7 +101,7 @@ namespace Errata
             }
 
             var line = Lines[row];
-            if (column >= line.Length - 1)
+            if (column > line.Length - 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(column), "label column cannot start at the end of the line");
             }

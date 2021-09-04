@@ -1,0 +1,8 @@
+Error: This will fail
+    ┌─[Example.md]
+    │
+ 19 │ / Patrik
+    ·        ┬
+    ·        ╰ Issue on last character of the line
+    │
+    └─
