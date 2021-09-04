@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 
 namespace Errata
 {
@@ -24,6 +26,8 @@ namespace Errata
             var ctx = new ReportContext(_console, _repository, settings);
             var renderer = new DiagnosticRenderer(ctx);
 
+            var errors = new List<IRenderable>();
+
             foreach (var (_, first, _, diagnostic) in report.Diagnostics.Enumerate())
             {
                 if (!first)
@@ -32,7 +36,31 @@ namespace Errata
                     ctx.Builder.CommitLine();
                 }
 
-                renderer.Render(diagnostic);
+                try
+                {
+                    renderer.Render(diagnostic);
+                }
+                catch (Exception ex) when (!ctx.PropagateExceptions)
+                {
+                    var message = "[red]An error occured when rendering diagnostic[/]\n" +
+                        "Error: " + ex.Message + "\n\n" +
+                        "If you belive this is a bug in Errata, please submit it\n" +
+                        "at https://github.com/spectreconsole/errata/issues/new";
+
+                    errors.Add(
+                        new Panel(message)
+                            .Header("Errata Error")
+                            .BorderColor(Color.Red));
+                    errors.Add(new Text("\n"));
+                }
+            }
+
+            if (errors.Count > 0)
+            {
+                foreach (var error in errors)
+                {
+                    _console.Write(error);
+                }
             }
 
             _console.Write(new ReportRenderable(ctx.Builder.GetLines()));

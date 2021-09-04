@@ -20,5 +20,13 @@ namespace Errata
         /// the report should be rendered in compact mode.
         /// </summary>
         public bool Compact { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not exceptions
+        /// should get propagated to the caller if rendering would fail.
+        /// If set to <see langword="false" />, Errata errors will be
+        /// rendered as part of the report.
+        /// </summary>
+        public bool PropagateExceptions { get; set; }
     }
 }

@@ -327,6 +327,32 @@ namespace Errata.Tests
                 // Then
                 return Verifier.Verify(console.Output);
             }
+
+            [Fact]
+            [Expectation("ReportError")]
+            public Task Should_Render_Errors_Correctly()
+            {
+                // Given
+                var console = new TestConsole().Width(80);
+                var report = new Report(new EmbeddedResourceRepository());
+                report.AddDiagnostic(
+                    Diagnostic.Error("This will fail")
+                        .WithLabel(new Label("Example.md", new Location(19, 8), "Issue on last character of the line")
+                            .WithColor(Color.Yellow)
+                            .WithLength(1)));
+
+                report.AddDiagnostic(
+                    Diagnostic.Error("This will fail")
+                        .WithLabel(new Label("Example.md", new Location(21, 8), "This is an error")
+                            .WithColor(Color.Yellow)
+                            .WithLength(1)));
+
+                // When
+                report.Render(console);
+
+                // Then
+                return Verifier.Verify(console.Output);
+            }
         }
     }
 }

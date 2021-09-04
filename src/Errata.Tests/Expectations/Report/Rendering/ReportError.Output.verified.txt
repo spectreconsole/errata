@@ -1,0 +1,17 @@
+┌─Errata Error───────────────────────────────────────────────┐
+│ An error occured when rendering diagnostic                 │
+│ Error: Label row exceeded number of rows (Parameter 'row') │
+│                                                            │
+│ If you belive this is a bug in Errata, please submit it    │
+│ at https://github.com/spectreconsole/errata/issues/new     │
+└────────────────────────────────────────────────────────────┘
+
+Error: This will fail
+    ┌─[Example.md]
+    │
+ 19 │ / Patrik
+    ·        ┬
+    ·        ╰ Issue on last character of the line
+    │
+    └─
+ 
