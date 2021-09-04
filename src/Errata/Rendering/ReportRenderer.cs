@@ -43,14 +43,11 @@ namespace Errata
                 catch (Exception ex) when (!ctx.PropagateExceptions)
                 {
                     var message = "[red]An error occured when rendering diagnostic[/]\n" +
-                        "Error: " + ex.Message + "\n\n" +
+                        "Error: " + ex.Message.EscapeMarkup() + "\n\n" +
                         "If you belive this is a bug in Errata, please submit it\n" +
                         "at https://github.com/spectreconsole/errata/issues/new";
 
-                    errors.Add(
-                        new Panel(message)
-                            .Header("Errata Error")
-                            .BorderColor(Color.Red));
+                    errors.Add(new Panel(message).Header("Errata Error").BorderColor(Color.Red));
                     errors.Add(new Text("\n"));
                 }
             }
