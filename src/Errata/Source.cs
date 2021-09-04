@@ -71,7 +71,7 @@ namespace Errata
                 throw new ArgumentOutOfRangeException(nameof(offset), "Offset must be equal or greater than zero (0)");
             }
 
-            if (offset >= Length)
+            if (offset > Length)
             {
                 throw new InvalidOperationException("Invalid offset");
             }

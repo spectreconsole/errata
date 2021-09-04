@@ -310,6 +310,7 @@ namespace Errata.Tests
             [Fact]
             [Expectation("LastCharacter")]
             [GitHubIssue(9)]
+            [GitHubIssue(10)]
             public Task Should_Render_Label_For_Last_Character_Of_A_Line_Correctly()
             {
                 // Given
@@ -330,6 +331,7 @@ namespace Errata.Tests
 
             [Fact]
             [Expectation("ReportError")]
+            [GitHubIssue(8)]
             public Task Should_Render_Errors_Correctly()
             {
                 // Given
