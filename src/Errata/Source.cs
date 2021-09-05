@@ -68,12 +68,15 @@ namespace Errata
         {
             if (offset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(offset), "Offset must be equal or greater than zero (0)");
+                throw new ErrataException("Offset must be equal or greater than zero (0)")
+                    .WithContext("Offset", offset);
             }
 
             if (offset > Length)
             {
-                throw new InvalidOperationException("Invalid offset");
+                throw new ErrataException("Offset exceeded the source length")
+                    .WithContext("Offset", offset)
+                    .WithContext("Source length", Length);
             }
 
             var lineIndex = GetLineIndex(offset);
@@ -97,13 +100,20 @@ namespace Errata
 
             if (row >= Lines.Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(row), "Label row exceeded number of rows");
+                throw new ErrataException("Label row exceeded number of lines")
+                    .WithContext("Row", row)
+                    .WithContext("Column", column)
+                    .WithContext("Line count", Lines.Count);
             }
 
             var line = Lines[row];
             if (column > line.Length - 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(column), "label column cannot start at the end of the line");
+                throw new ErrataException("label column cannot start at the end of the line")
+                    .WithContext("Row", row)
+                    .WithContext("Column", column)
+                    .WithContext("Current line length", line.Length)
+                    .WithContext("Line count", Lines.Count);
             }
 
             return new TextSpan(line.Offset + column, line.Offset + column + length);
@@ -113,7 +123,8 @@ namespace Errata
         {
             if (offset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(offset), "Offset must be equal or greater than zero (0)");
+                throw new ErrataException("Offset must be equal or greater than zero (0)")
+                    .WithContext("Offset", offset);
             }
 
             var index = 0;
@@ -127,7 +138,9 @@ namespace Errata
                 index++;
             }
 
-            throw new InvalidOperationException("Line index could not be found");
+            throw new ErrataException("Line index could not be found")
+                .WithContext("Offset", offset)
+                .WithContext("Line count", Lines.Count);
         }
     }
 }

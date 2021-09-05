@@ -332,7 +332,7 @@ namespace Errata.Tests
             [Fact]
             [Expectation("ReportError")]
             [GitHubIssue(8)]
-            public Task Should_Render_Errors_Correctly()
+            public Task Should_Render_Errata_Errors_Correctly()
             {
                 // Given
                 var console = new TestConsole().Width(80);
@@ -350,7 +350,10 @@ namespace Errata.Tests
                             .WithLength(1)));
 
                 // When
-                report.Render(console);
+                report.Render(console, new ReportSettings
+                {
+                    ExcludeStackTrace = true,
+                });
 
                 // Then
                 return Verifier.Verify(console.Output);

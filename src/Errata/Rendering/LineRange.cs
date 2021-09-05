@@ -60,7 +60,12 @@ namespace Errata
         {
             if (offset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(offset), "Offset must be equal or greater than zero (0)");
+                throw new ErrataException("Offset must be equal or greater than zero (0)")
+                    .WithContext("Start", this.Start)
+                    .WithContext("End", this.End)
+                    .WithContext("Multiline", this.IsMultiLine)
+                    .WithContext("Length", Length)
+                    .WithContext("Offset", offset);
             }
 
             return Start <= offset && End > offset;

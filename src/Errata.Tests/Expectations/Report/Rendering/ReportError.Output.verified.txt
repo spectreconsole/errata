@@ -1,10 +1,20 @@
-┌─Errata Error───────────────────────────────────────────────┐
-│ An error occured when rendering diagnostic                 │
-│ Error: Label row exceeded number of rows (Parameter 'row') │
-│                                                            │
-│ If you belive this is a bug in Errata, please submit it    │
-│ at https://github.com/spectreconsole/errata/issues/new     │
-└────────────────────────────────────────────────────────────┘
+┌─Errata Error─────────────────────────────────────────────────────────────────┐
+│ An error occured when rendering a diagnostic.                                │
+│ Message: Label row exceeded number of lines                                  │
+│                                                                              │
+│ Diagnostic:                                                                  │
+│ Message: This will fail                                                      │
+│ Category: Error                                                              │
+│ Source: Example.md                                                           │
+│                                                                              │
+│ Context:                                                                     │
+│ Row: 20                                                                      │
+│ Column: 7                                                                    │
+│ Line count: 19                                                               │
+│                                                                              │
+│ If you believe this is a bug in Errata, please submit an issue at            │
+│ https://github.com/spectreconsole/errata/issues/new                          │
+└──────────────────────────────────────────────────────────────────────────────┘
 
 Error: This will fail
     ┌─[Example.md]

@@ -14,6 +14,7 @@ namespace Errata
         public DiagnosticFormatter Formatter { get; }
         public bool Compact { get; }
         public bool PropagateExceptions { get; }
+        public bool ExcludeStackTrace { get; }
 
         public ReportContext(IAnsiConsole console, ISourceRepository repository, ReportSettings? settings)
         {
@@ -26,6 +27,7 @@ namespace Errata
             Builder = new ReportBuilder(_console, Characters);
             Compact = _settings.Compact;
             PropagateExceptions = _settings.PropagateExceptions;
+            ExcludeStackTrace = _settings.ExcludeStackTrace;
         }
 
         public DiagnosticContext CreateDiagnosticContext(Diagnostic diagnostic)

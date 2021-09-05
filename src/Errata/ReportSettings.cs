@@ -28,5 +28,7 @@ namespace Errata
         /// rendered as part of the report.
         /// </summary>
         public bool PropagateExceptions { get; set; }
+
+        internal bool ExcludeStackTrace { get; set; }
     }
 }

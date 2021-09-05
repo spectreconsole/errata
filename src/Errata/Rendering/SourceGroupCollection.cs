@@ -29,7 +29,8 @@ namespace Errata
             {
                 if (!repository.TryGet(label.SourceId, out var source))
                 {
-                    throw new InvalidOperationException($"Could not get source for '{label.SourceId}'");
+                    throw new ErrataException($"Could not get source for '{label.SourceId}'")
+                        .WithContext("Source", label.SourceId);
                 }
 
                 if (!groups.TryGetValue(source, out var _))
