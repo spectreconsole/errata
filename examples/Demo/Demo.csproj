@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <ExampleTitle>Demo</ExampleTitle>
     <ExampleDescription>Demonstrates different kinds of diagnostics.</ExampleDescription>
