@@ -35,12 +35,6 @@ namespace Example
                     .WithLabel(new Label("Demo/Files/Program.cs", 174..176, "Code should not contain trailing whitespace")
                         .WithColor(Color.Blue));
 
-            report.AddDiagnostic(
-                Diagnostic.Info("Fix formatting")
-                    .WithCode("IDE0055"))
-                    .WithLabel(new Label("Demo/Files/Program.cs", 1742..1762, "Code should not contain trailing whitespace")
-                        .WithColor(Color.Blue));
-
             // Markdown
             report.AddDiagnostic(
                 Diagnostic.Error("There were markdown errors")
