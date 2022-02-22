@@ -252,6 +252,84 @@ namespace Errata.Tests
                 }
             }
 
+            [UsesVerify]
+            [ExpectationPath("Rows")]
+            public sealed class UsingLocationRows
+            {
+                [Fact]
+                [Expectation("SingleLabel")]
+                public Task Should_Render_Diagnostic_With_Single_Label_Correctly()
+                {
+                    // Given
+                    var console = new TestConsole().Width(80);
+                    var report = new Report(new EmbeddedResourceRepository());
+
+                    report.AddDiagnostic(
+                        Diagnostic.Error("There are spelling errors")
+                            .WithCode("SPELLING001")
+                            .WithLabel(new Label("Example.md", new Location(11), "Did you mean 'Yabba dabba doo'?")
+                                .WithColor(Color.Red)));
+
+                    // When
+                    report.Render(console);
+
+                    // Then
+                    return Verifier.Verify(console.Output);
+                }
+
+                [Fact]
+                [Expectation("MultipleLabels")]
+                public Task Should_Render_Diagnostic_With_Multiple_Labels_Correctly()
+                {
+                    // Given
+                    var console = new TestConsole().Width(80);
+                    var report = new Report(new EmbeddedResourceRepository());
+
+                    report.AddDiagnostic(
+                        Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                            .WithCode("CS0019")
+                            .WithNote("Try changing the type")
+                            .WithLabel(new Label("Program.cs", new Location(15), "This is of type 'int'")
+                                .WithColor(Color.Yellow))
+                            .WithLabel(new Label("Program.cs", new Location(15), "Division is not possible")
+                                .WithColor(Color.Red))
+                            .WithLabel(new Label("Program.cs", new Location(15), "This is of type 'string'")
+                                .WithColor(Color.Blue)));
+
+                    // When
+                    report.Render(console);
+
+                    // Then
+                    return Verifier.Verify(console.Output);
+                }
+
+                [Fact]
+                [Expectation("MultipleLabelsDifferentPriority")]
+                public Task Should_Render_Diagnostic_With_Multiple_Labels_With_Different_Priority_Correctly()
+                {
+                    // Given
+                    var console = new TestConsole().Width(80);
+                    var report = new Report(new EmbeddedResourceRepository());
+
+                    report.AddDiagnostic(
+                        Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                            .WithCode("CS0019")
+                            .WithNote("Try changing the type")
+                            .WithLabel(new Label("Program.cs", new Location(15), "This is of type 'int'")
+                                .WithColor(Color.Yellow).WithPriority(3))
+                            .WithLabel(new Label("Program.cs", new Location(15), "Division is not possible")
+                                .WithColor(Color.Red).WithPriority(2))
+                            .WithLabel(new Label("Program.cs", new Location(15), "This is of type 'string'")
+                                .WithColor(Color.Blue).WithPriority(1)));
+
+                    // When
+                    report.Render(console);
+
+                    // Then
+                    return Verifier.Verify(console.Output);
+                }
+            }
+
             [Fact]
             [Expectation("LabelPriority")]
             public Task Should_Render_Labels_With_Priority_Correctly()

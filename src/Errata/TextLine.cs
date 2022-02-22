@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Errata
 {
     /// <summary>
     /// Represents a text line.
     /// </summary>
+    [DebuggerDisplay("{Text}")]
     public sealed class TextLine
     {
         /// <summary>

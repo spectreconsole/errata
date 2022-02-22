@@ -8,14 +8,35 @@ namespace Errata
     public struct Location : IEquatable<Location>
     {
         /// <summary>
-        /// Gets the row.
+        /// Gets the (zero indexed) row.
         /// </summary>
         public int Row { get; }
 
         /// <summary>
-        /// Gets the column.
+        /// Gets the (zero indexed) column.
         /// </summary>
         public int Column { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the location is a row.
+        /// </summary>
+        public bool IsRow { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Location"/> struct.
+        /// </summary>
+        /// <param name="row">The row.</param>
+        public Location(int row)
+        {
+            if (row < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(row), "Row must be greater than zero");
+            }
+
+            Row = row;
+            Column = 0;
+            IsRow = true;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Location"/> struct.
@@ -35,6 +56,7 @@ namespace Errata
 
             Row = row;
             Column = column;
+            IsRow = false;
         }
 
         /// <inheritdoc/>

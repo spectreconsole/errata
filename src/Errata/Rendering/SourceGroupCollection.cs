@@ -64,7 +64,7 @@ namespace Errata
             {
                 var lineRange = group.Source.GetLineRange(group.Span);
                 var end = lineRange.End == 0 ? 1 : lineRange.End;
-                return (int)(Math.Log10(end) + 1);
+                return (int)(Math.Log10(end + 1) + 1);
             });
         }
     }

@@ -116,6 +116,11 @@ namespace Errata
                     .WithContext("Line count", Lines.Count);
             }
 
+            if (location.IsRow)
+            {
+                return line.Span;
+            }
+
             return new TextSpan(line.Offset + column, line.Offset + column + length);
         }
 
