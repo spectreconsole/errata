@@ -22,6 +22,7 @@ namespace Errata
             public Enumerator(LineRange span)
             {
                 _span = span;
+                Reset();
             }
 
             public void Dispose()
