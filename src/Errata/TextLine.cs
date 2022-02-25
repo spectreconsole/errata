@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace Errata
 {
@@ -19,6 +20,11 @@ namespace Errata
         /// Gets the line offset.
         /// </summary>
         public int Offset { get; }
+
+        /// <summary>
+        /// Gets the line break.
+        /// </summary>
+        public char[] LineBreak { get; }
 
         /// <summary>
         /// Gets the line text.
@@ -41,11 +47,13 @@ namespace Errata
         /// <param name="index">The line index.</param>
         /// <param name="text">The line text.</param>
         /// <param name="offset">The line offset.</param>
-        public TextLine(int index, string text, int offset)
+        /// <param name="lineBreak">The line break.</param>
+        public TextLine(int index, string text, int offset, char[]? lineBreak = null)
         {
             Index = index;
             Text = text ?? string.Empty;
             Offset = offset;
+            LineBreak = lineBreak ?? Array.Empty<char>();
             Length = Text.Length;
             Span = new TextSpan(Offset, Offset + Length);
         }
@@ -62,17 +70,49 @@ namespace Errata
                 throw new ArgumentNullException(nameof(text));
             }
 
-            var result = new List<TextLine>();
-            var lines = text.Replace("\r\n", "\n").Split('\n'); // TODO: Handle line breaks properly
+            var lines = new List<TextLine>();
+            var buffer = new TextBuffer(text);
+            var index = 0;
             var offset = 0;
-            foreach (var (index, _, _, line) in lines.Enumerate())
+
+            while (buffer.CanRead)
             {
-                var tl = new TextLine(index, line, offset);
-                result.Add(tl);
-                offset += tl.Length + 1;
+                var current = buffer.Read();
+                if (current == '\r' && buffer.Peek(0) == '\n')
+                {
+                    buffer.Read(); // Consume the \n
+
+                    var line = new TextLine(
+                        index, buffer.Slice(offset, buffer.Position - 2),
+                        offset, new char[] { '\r', '\n' });
+
+                    lines.Add(line);
+                    offset += line.Length + line.LineBreak.Length;
+                    index++;
+                }
+                else if (current == '\n')
+                {
+                    var line = new TextLine(
+                        index, buffer.Slice(offset, buffer.Position - 1),
+                        offset, new char[] { '\n' });
+
+                    lines.Add(line);
+                    offset += line.Length + line.LineBreak.Length;
+                    index++;
+                }
             }
 
-            return result;
+            if (offset < buffer.Length)
+            {
+                lines.Add(
+                    new TextLine(
+                        index,
+                        buffer.Slice(offset, buffer.Position),
+                        offset,
+                        null));
+            }
+
+            return lines;
         }
     }
 }

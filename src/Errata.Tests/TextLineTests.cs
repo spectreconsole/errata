@@ -6,6 +6,33 @@ namespace Errata.Tests
     public sealed class TextLineTests
     {
         [Fact]
+        public void Should_Split_Lines_Correctly()
+        {
+            // Given, When
+            var lines = TextLine.Split("Hello\nWorld\r\n!");
+
+            // Then
+            lines.Count.ShouldBe(3);
+            lines[0].Text.ShouldBe("Hello");
+            lines[1].Text.ShouldBe("World");
+            lines[2].Text.ShouldBe("!");
+        }
+
+        [Fact]
+        public void Should_Split_Lines_Starting_With_Line_Break_Correctly()
+        {
+            // Given, When
+            var lines = TextLine.Split("\nHello\nWorld\r\n!");
+
+            // Then
+            lines.Count.ShouldBe(4);
+            lines[0].Text.ShouldBeEmpty();
+            lines[1].Text.ShouldBe("Hello");
+            lines[2].Text.ShouldBe("World");
+            lines[3].Text.ShouldBe("!");
+        }
+
+        [Fact]
         public void Should_Return_Correct_Index()
         {
             // Given, When

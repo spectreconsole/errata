@@ -60,7 +60,7 @@ namespace Errata
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Lines = TextLine.Split(text);
-            Length = Lines.Sum(x => x.Length) + Lines.Count - 1;
+            Length = Lines.Sum(x => x.Length + x.LineBreak.Length);
             Text = text ?? string.Empty;
         }
 
