@@ -2,30 +2,29 @@ using System;
 using System.Collections.Generic;
 using Spectre.Console.Rendering;
 
-namespace Errata
+namespace Errata;
+
+internal sealed class ReportRenderable : IRenderable
 {
-    internal sealed class ReportRenderable : IRenderable
+    private readonly List<SegmentLine> _lines;
+
+    public ReportRenderable(IEnumerable<SegmentLine> lines)
     {
-        private readonly List<SegmentLine> _lines;
-
-        public ReportRenderable(IEnumerable<SegmentLine> lines)
+        if (lines is null)
         {
-            if (lines is null)
-            {
-                throw new ArgumentNullException(nameof(lines));
-            }
-
-            _lines = new List<SegmentLine>(lines);
+            throw new ArgumentNullException(nameof(lines));
         }
 
-        public Measurement Measure(RenderContext context, int maxWidth)
-        {
-            return new Measurement(maxWidth, maxWidth);
-        }
+        _lines = new List<SegmentLine>(lines);
+    }
 
-        public IEnumerable<Segment> Render(RenderContext context, int maxWidth)
-        {
-            return new SegmentLineEnumerator(_lines);
-        }
+    public Measurement Measure(RenderContext context, int maxWidth)
+    {
+        return new Measurement(maxWidth, maxWidth);
+    }
+
+    public IEnumerable<Segment> Render(RenderContext context, int maxWidth)
+    {
+        return new SegmentLineEnumerator(_lines);
     }
 }

@@ -1,14 +1,13 @@
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
 using System;
 
-namespace Errata
+namespace Errata;
+
+internal static class RangeExtensions
 {
-    internal static class RangeExtensions
+    public static bool Contains(this Range range, int value)
     {
-        public static bool Contains(this Range range, int value)
-        {
-            return range.Start.Value >= value && range.End.Value <= value;
-        }
+        return range.Start.Value >= value && range.End.Value <= value;
     }
 }
 #endif

@@ -1,15 +1,14 @@
-namespace Errata
-{
-    internal enum LabelKind
-    {
-        /// <summary>
-        /// The label spans a single line.
-        /// </summary>
-        Inline,
+namespace Errata;
 
-        /// <summary>
-        /// The label spans multiple lines.
-        /// </summary>
-        MultiLine,
-    }
+internal enum LabelKind
+{
+    /// <summary>
+    /// The label spans a single line.
+    /// </summary>
+    Inline,
+
+    /// <summary>
+    /// The label spans multiple lines.
+    /// </summary>
+    MultiLine,
 }

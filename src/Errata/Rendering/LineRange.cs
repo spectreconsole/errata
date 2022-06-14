@@ -2,120 +2,119 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Errata
+namespace Errata;
+
+internal readonly struct LineRange : IEnumerable<int>, IEquatable<LineRange>
 {
-    internal readonly struct LineRange : IEnumerable<int>, IEquatable<LineRange>
+    public int Start { get; }
+    public int End { get; }
+    public int Length => End - Start;
+
+    public bool IsMultiLine => Start != End;
+
+    private sealed class Enumerator : IEnumerator<int>
     {
-        public int Start { get; }
-        public int End { get; }
-        public int Length => End - Start;
+        private readonly LineRange _span;
 
-        public bool IsMultiLine => Start != End;
+        public int Current { get; private set; }
+        object IEnumerator.Current => Current;
 
-        private sealed class Enumerator : IEnumerator<int>
+        public Enumerator(LineRange span)
         {
-            private readonly LineRange _span;
+            _span = span;
+            Reset();
+        }
 
-            public int Current { get; private set; }
-            object IEnumerator.Current => Current;
+        public void Dispose()
+        {
+        }
 
-            public Enumerator(LineRange span)
+        public bool MoveNext()
+        {
+            if (Current >= _span.End)
             {
-                _span = span;
-                Reset();
+                return false;
             }
 
-            public void Dispose()
-            {
-            }
-
-            public bool MoveNext()
-            {
-                if (Current >= _span.End)
-                {
-                    return false;
-                }
-
-                Current++;
-                return true;
-            }
-
-            public void Reset()
-            {
-                Current = _span.Start - 1;
-            }
+            Current++;
+            return true;
         }
 
-        public LineRange(int start, int end)
+        public void Reset()
         {
-            if (end < start)
-            {
-                throw new ArgumentException("The end position must be greater than the start position", nameof(end));
-            }
-
-            Start = start;
-            End = end;
+            Current = _span.Start - 1;
         }
+    }
 
-        public bool Contains(int offset)
+    public LineRange(int start, int end)
+    {
+        if (end < start)
         {
-            if (offset < 0)
-            {
-                throw new ErrataException("Offset must be equal or greater than zero (0)")
-                    .WithContext("Start", this.Start)
-                    .WithContext("End", this.End)
-                    .WithContext("Multiline", this.IsMultiLine)
-                    .WithContext("Length", Length)
-                    .WithContext("Offset", offset);
-            }
-
-            return Start <= offset && End > offset;
+            throw new ArgumentException("The end position must be greater than the start position", nameof(end));
         }
 
-        public bool Equals(LineRange other)
+        Start = start;
+        End = end;
+    }
+
+    public bool Contains(int offset)
+    {
+        if (offset < 0)
         {
-            return Start == other.Start && End == other.End;
+            throw new ErrataException("Offset must be equal or greater than zero (0)")
+                .WithContext("Start", this.Start)
+                .WithContext("End", this.End)
+                .WithContext("Multiline", this.IsMultiLine)
+                .WithContext("Length", Length)
+                .WithContext("Offset", offset);
         }
 
-        public IEnumerator<int> GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        return Start <= offset && End > offset;
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    public bool Equals(LineRange other)
+    {
+        return Start == other.Start && End == other.End;
+    }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is LineRange span && Equals(span);
-        }
+    public IEnumerator<int> GetEnumerator()
+    {
+        return new Enumerator(this);
+    }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = (int)2166136261;
-                hash = (hash * 16777619) ^ Start.GetHashCode();
-                hash = (hash * 16777619) ^ End.GetHashCode();
-                return hash;
-            }
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 
-        public override string? ToString()
-        {
-            return $"{Start}..{End}";
-        }
+    public override bool Equals(object? obj)
+    {
+        return obj is LineRange span && Equals(span);
+    }
 
-        public static bool operator ==(LineRange left, LineRange right)
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            return left.Equals(right);
+            var hash = (int)2166136261;
+            hash = (hash * 16777619) ^ Start.GetHashCode();
+            hash = (hash * 16777619) ^ End.GetHashCode();
+            return hash;
         }
+    }
 
-        public static bool operator !=(LineRange left, LineRange right)
-        {
-            return !(left == right);
-        }
+    public override string? ToString()
+    {
+        return $"{Start}..{End}";
+    }
+
+    public static bool operator ==(LineRange left, LineRange right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(LineRange left, LineRange right)
+    {
+        return !(left == right);
     }
 }

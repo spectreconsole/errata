@@ -1,63 +1,62 @@
-namespace Errata
+namespace Errata;
+
+/// <summary>
+/// Represents a renderable character.
+/// </summary>
+public enum Character
 {
     /// <summary>
-    /// Represents a renderable character.
+    /// Represents `:`.
     /// </summary>
-    public enum Character
-    {
-        /// <summary>
-        /// Represents `:`.
-        /// </summary>
-        Colon,
+    Colon,
 
-        /// <summary>
-        /// Represents `┌`.
-        /// </summary>
-        TopLeftCornerHard,
+    /// <summary>
+    /// Represents `┌`.
+    /// </summary>
+    TopLeftCornerHard,
 
-        /// <summary>
-        /// Represents `└`.
-        /// </summary>
-        BottomLeftCornerHard,
+    /// <summary>
+    /// Represents `└`.
+    /// </summary>
+    BottomLeftCornerHard,
 
-        /// <summary>
-        /// Represents `├`.
-        /// </summary>
-        LeftConnector,
+    /// <summary>
+    /// Represents `├`.
+    /// </summary>
+    LeftConnector,
 
-        /// <summary>
-        /// Represents `─`.
-        /// </summary>
-        HorizontalLine,
+    /// <summary>
+    /// Represents `─`.
+    /// </summary>
+    HorizontalLine,
 
-        /// <summary>
-        /// Represents `│`.
-        /// </summary>
-        VerticalLine,
+    /// <summary>
+    /// Represents `│`.
+    /// </summary>
+    VerticalLine,
 
-        /// <summary>
-        /// Represents `·`.
-        /// </summary>
-        Dot,
+    /// <summary>
+    /// Represents `·`.
+    /// </summary>
+    Dot,
 
-        /// <summary>
-        /// Represents `┬`.
-        /// </summary>
-        Anchor,
+    /// <summary>
+    /// Represents `┬`.
+    /// </summary>
+    Anchor,
 
-        /// <summary>
-        /// Represents `─`.
-        /// </summary>
-        AnchorHorizontalLine,
+    /// <summary>
+    /// Represents `─`.
+    /// </summary>
+    AnchorHorizontalLine,
 
-        /// <summary>
-        /// Represents `│`.
-        /// </summary>
-        AnchorVerticalLine,
+    /// <summary>
+    /// Represents `│`.
+    /// </summary>
+    AnchorVerticalLine,
 
-        /// <summary>
-        /// Represents `╰`.
-        /// </summary>
-        BottomLeftCornerRound,
-    }
+    /// <summary>
+    /// Represents `╰`.
+    /// </summary>
+    BottomLeftCornerRound,
 }
