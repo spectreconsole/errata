@@ -35,7 +35,7 @@
   <ItemGroup Label="Package References">
     <PackageReference Include="MinVer" PrivateAssets="All" Version="2.5.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" Version="1.1.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22518.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
