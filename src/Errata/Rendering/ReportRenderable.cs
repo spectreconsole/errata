@@ -18,12 +18,12 @@ internal sealed class ReportRenderable : IRenderable
         _lines = new List<SegmentLine>(lines);
     }
 
-    public Measurement Measure(RenderContext context, int maxWidth)
+    public Measurement Measure(RenderOptions context, int maxWidth)
     {
         return new Measurement(maxWidth, maxWidth);
     }
 
-    public IEnumerable<Segment> Render(RenderContext context, int maxWidth)
+    public IEnumerable<Segment> Render(RenderOptions context, int maxWidth)
     {
         return new SegmentLineEnumerator(_lines);
     }
