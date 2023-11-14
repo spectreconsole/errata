@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using VerifyTests;
+using VerifyXunit;
 
 namespace Errata.Tests;
 
@@ -8,6 +9,6 @@ public static class VerifyConfiguration
     [ModuleInitializer]
     public static void Init()
     {
-        VerifierSettings.DerivePathInfo(Expectations.Initialize);
+        Verifier.DerivePathInfo(Expectations.Initialize);
     }
 }

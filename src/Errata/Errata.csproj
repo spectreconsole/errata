@@ -12,7 +12,7 @@
   </ItemGroup>
  
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.46.0" />
+    <PackageReference Include="Spectre.Console" Version="0.47.0" />
   </ItemGroup>
 		
   <!-- Nullability support -->
