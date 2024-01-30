@@ -43,7 +43,7 @@ internal sealed class DiagnosticRenderer
         foreach (var (_, first, last, group) in ctx.Groups.Enumerate())
         {
             // 🔎 ···┌─[Program.cs]\n
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
             ctx.Builder.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
             ctx.Builder.Append(Character.HorizontalLine, Color.Grey);
             ctx.Builder.Append("[", Color.Grey);
@@ -52,7 +52,7 @@ internal sealed class DiagnosticRenderer
             ctx.Builder.CommitLine();
 
             // 🔎 ···│\n
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
             ctx.Builder.Append(Character.VerticalLine, Color.Grey);
             ctx.Builder.CommitLine();
 
@@ -102,7 +102,7 @@ internal sealed class DiagnosticRenderer
                 if (!lastLine)
                 {
                     // 🔎 ···(dot)\n
-                    ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+                    ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
                     ctx.Builder.Append(Character.Dot, Color.Grey);
                     ctx.Builder.CommitLine();
                 }
@@ -110,7 +110,7 @@ internal sealed class DiagnosticRenderer
 
             // 🔎 ···(separator)\n
             var separator = last ? Character.VerticalLine : Character.Dot;
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
             ctx.Builder.Append(separator, Color.Grey);
             ctx.Builder.CommitLine();
 
@@ -124,7 +124,7 @@ internal sealed class DiagnosticRenderer
                     if (!string.IsNullOrWhiteSpace(labelWithNote.Note))
                     {
                         // 🔎 ···(dot) NOTE: This is a note\n
-                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
                         ctx.Builder.Append(Character.Dot, Color.Grey);
                         ctx.Builder.AppendSpace();
                         ctx.Builder.Append("NOTE: ", Color.Aqua);
@@ -135,7 +135,7 @@ internal sealed class DiagnosticRenderer
                     if (lastLabel)
                     {
                         // 🔎 ···│\n
-                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
                         ctx.Builder.Append(Character.VerticalLine, Color.Grey);
                         ctx.Builder.CommitLine();
                     }
@@ -145,7 +145,7 @@ internal sealed class DiagnosticRenderer
             if (last)
             {
                 // 🔎 ···└─\n
-                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
                 ctx.Builder.Append(Character.BottomLeftCornerHard, Color.Grey);
                 ctx.Builder.Append(Character.HorizontalLine, Color.Grey);
                 ctx.Builder.CommitLine();
@@ -281,7 +281,7 @@ internal sealed class DiagnosticRenderer
         if (showLineNumber)
         {
             // 🔎 ·38·│
-            ctx.Builder.AppendSpace();
+            ctx.Builder.AppendSpaces(ctx.HasLeftPadding ? 1 : 0);
             ctx.Builder.Append((line.Index + 1).ToString().PadRight(ctx.LineNumberWidth));
             ctx.Builder.AppendSpace();
             ctx.Builder.Append(Character.VerticalLine, Color.Grey);
@@ -289,7 +289,7 @@ internal sealed class DiagnosticRenderer
         else
         {
             // 🔎 ····(dot)
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + 2);
+            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
             ctx.Builder.Append(Character.Dot, Color.Grey);
         }
     }

@@ -13,6 +13,7 @@ internal sealed class ReportContext
     public CharacterSet Characters { get; }
     public DiagnosticFormatter Formatter { get; }
     public bool Compact { get; }
+    public bool LeftPadding { get; }
     public bool PropagateExceptions { get; }
     public bool ExcludeStackTrace { get; }
 
@@ -26,6 +27,7 @@ internal sealed class ReportContext
         Formatter = _settings.Formatter ?? new DiagnosticFormatter();
         Builder = new ReportBuilder(_console, Characters);
         Compact = _settings.Compact;
+        LeftPadding = _settings.LeftPadding;
         PropagateExceptions = _settings.PropagateExceptions;
         ExcludeStackTrace = _settings.ExcludeStackTrace;
     }

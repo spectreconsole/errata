@@ -14,6 +14,8 @@ internal sealed class DiagnosticContext
     public Diagnostic Diagnostic { get; }
     public SourceGroupCollection Groups { get; }
     public int LineNumberWidth { get; }
+    public bool HasLeftPadding => _ctx.LeftPadding;
+    public int LeftPadding => HasLeftPadding ? 2 : 1;
 
     public DiagnosticContext(ReportContext ctx, Diagnostic diagnostic, SourceGroupCollection groups)
     {

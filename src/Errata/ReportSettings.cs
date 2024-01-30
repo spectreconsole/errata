@@ -22,6 +22,12 @@ public sealed class ReportSettings
     public bool Compact { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether or not
+    /// the report should be padded on the left side.
+    /// </summary>
+    public bool LeftPadding { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets a value indicating whether or not exceptions
     /// should get propagated to the caller if rendering would fail.
     /// If set to <see langword="false" />, Errata errors will be
@@ -29,5 +35,9 @@ public sealed class ReportSettings
     /// </summary>
     public bool PropagateExceptions { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether or not stack traces
+    /// should be excluded.
+    /// </summary>
     internal bool ExcludeStackTrace { get; set; }
 }
