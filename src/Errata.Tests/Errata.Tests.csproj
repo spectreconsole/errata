@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,14 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\Example.md" />
-    <EmbeddedResource Include="Data\Foo.cpp" />
-    <EmbeddedResource Include="Data\Foo.h" />
-    <EmbeddedResource Include="Data\Program.cs" />
+    <EmbeddedResource Include="Data\*.*" />
     <Compile Remove="Data\Program.cs" />
-    <None Remove="Data\Example.md" />
-    <None Remove="Data\Foo.cpp" />
-    <None Remove="Data\Foo.h" />
+    <None Remove="Data\*.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,10 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Errata\Errata.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Expectations\Report\" />
   </ItemGroup>
 
 </Project>
