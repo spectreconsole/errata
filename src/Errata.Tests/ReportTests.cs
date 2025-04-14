@@ -10,11 +10,9 @@ namespace Errata.Tests;
 [ExpectationPath("Report")]
 public sealed class ReportTests
 {
-    [UsesVerify]
     [ExpectationPath("Rendering")]
     public sealed class TheRenderMethod
     {
-        [UsesVerify]
         [ExpectationPath("Spans")]
         public sealed class UsingSpans
         {
@@ -113,7 +111,6 @@ public sealed class ReportTests
             }
         }
 
-        [UsesVerify]
         [ExpectationPath("Locations")]
         public sealed class UsingLocations
         {
@@ -252,7 +249,6 @@ public sealed class ReportTests
             }
         }
 
-        [UsesVerify]
         [ExpectationPath("Rows")]
         public sealed class UsingLocationRows
         {
