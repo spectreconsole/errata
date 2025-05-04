@@ -15,7 +15,8 @@ internal sealed class DiagnosticContext
     public SourceGroupCollection Groups { get; }
     public int LineNumberWidth { get; }
     public bool HasLeftPadding => _ctx.LeftPadding;
-    public int LeftPadding => HasLeftPadding ? 2 : 1;
+    public int LeftPadding { get; }
+    public bool ShowLineNumbers => _ctx.ShowLineNumbers;
 
     public DiagnosticContext(ReportContext ctx, Diagnostic diagnostic, SourceGroupCollection groups)
     {
@@ -23,6 +24,12 @@ internal sealed class DiagnosticContext
 
         Diagnostic = diagnostic ?? throw new ArgumentNullException(nameof(diagnostic));
         Groups = groups ?? throw new ArgumentNullException(nameof(groups));
-        LineNumberWidth = groups.GetLineNumberMaxWidth();
+        LineNumberWidth = ctx.ShowLineNumbers ? groups.GetLineNumberMaxWidth() : 0;
+
+        LeftPadding = HasLeftPadding ? 2 : 1;
+        if (!ShowLineNumbers && !HasLeftPadding)
+        {
+            LeftPadding = 0;
+        }
     }
 }

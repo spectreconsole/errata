@@ -16,6 +16,7 @@ internal sealed class ReportContext
     public bool LeftPadding { get; }
     public bool PropagateExceptions { get; }
     public bool ExcludeStackTrace { get; }
+    public bool ShowLineNumbers { get; }
 
     public ReportContext(IAnsiConsole console, ISourceRepository repository, ReportSettings? settings)
     {
@@ -30,6 +31,7 @@ internal sealed class ReportContext
         LeftPadding = _settings.LeftPadding;
         PropagateExceptions = _settings.PropagateExceptions;
         ExcludeStackTrace = _settings.ExcludeStackTrace;
+        ShowLineNumbers = _settings.ShowLineNumbers;
     }
 
     public DiagnosticContext CreateDiagnosticContext(Diagnostic diagnostic)

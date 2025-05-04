@@ -411,6 +411,65 @@ public sealed class ReportTests
         }
 
         [Fact]
+        [Expectation("NoLineNumbers")]
+        public Task Should_Render_Without_Line_Numbers_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithNote("Try changing the type")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow).WithLength(3).WithPriority(1))
+                    .WithLabel(new Label("Program.cs", new Location(15, 27), "Division is not possible")
+                        .WithColor(Color.Red).WithLength(1).WithPriority(3))
+                    .WithLabel(new Label("Program.cs", new Location(15, 29), "This is of type 'string'")
+                        .WithColor(Color.Blue).WithLength(3).WithPriority(2)));
+
+            // When
+            report.Render(console, new ReportSettings
+            {
+                ShowLineNumbers = false,
+            });
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("NoLineNumbersOrPadding")]
+        public Task Should_Render_Without_Line_Numbers_And_Padding_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithNote("Try changing the type")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow).WithLength(3).WithPriority(1))
+                    .WithLabel(new Label("Program.cs", new Location(15, 27), "Division is not possible")
+                        .WithColor(Color.Red).WithLength(1).WithPriority(3))
+                    .WithLabel(new Label("Program.cs", new Location(15, 29), "This is of type 'string'")
+                        .WithColor(Color.Blue).WithLength(3).WithPriority(2)));
+
+            // When
+            report.Render(console, new ReportSettings
+            {
+                ShowLineNumbers = false,
+                LeftPadding = false,
+            });
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
         [Expectation("LastCharacter")]
         [GitHubIssue(9)]
         [GitHubIssue(10)]

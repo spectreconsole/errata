@@ -56,12 +56,6 @@ internal sealed class DiagnosticRenderer
             ctx.Builder.Append(Character.VerticalLine, Color.Grey);
             ctx.Builder.CommitLine();
 
-            // Get all multi line labels
-            var multiLabels = group.Labels
-                .Where(l => l.Kind == LabelKind.MultiLine)
-                .OrderBy(l => l.SourceSpan.Length)
-                .ToList();
-
             // Iterate all lines in the line range
             foreach (var (_, _, lastLine, lineIndex) in group.Source.GetLineRange(group.Span).Enumerate())
             {
@@ -278,7 +272,7 @@ internal sealed class DiagnosticRenderer
         TextLine line,
         bool showLineNumber)
     {
-        if (showLineNumber)
+        if (ctx.ShowLineNumbers && showLineNumber)
         {
             // 🔎 ·38·│
             ctx.Builder.AppendSpaces(ctx.HasLeftPadding ? 1 : 0);
