@@ -5,38 +5,29 @@ namespace Errata;
 
 internal sealed class ReportContext
 {
-    private readonly IAnsiConsole _console;
-    private readonly ReportSettings _settings;
-    private readonly ISourceRepository _repository;
-
     public ReportBuilder Builder { get; }
     public CharacterSet Characters { get; }
     public DiagnosticFormatter Formatter { get; }
-    public bool Compact { get; }
-    public bool LeftPadding { get; }
-    public bool PropagateExceptions { get; }
-    public bool ExcludeStackTrace { get; }
-    public bool ShowLineNumbers { get; }
+    public ReportSettings Settings { get; }
+    public ISourceRepository Repository { get; }
 
     public ReportContext(IAnsiConsole console, ISourceRepository repository, ReportSettings? settings)
     {
-        _console = console ?? throw new ArgumentNullException(nameof(console));
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        _settings = settings ?? new ReportSettings();
+        if (console == null)
+        {
+            throw new ArgumentNullException(nameof(console));
+        }
 
-        Characters = _settings.Characters ??= CharacterSet.Create(_console);
-        Formatter = _settings.Formatter ?? new DiagnosticFormatter();
-        Builder = new ReportBuilder(_console, Characters);
-        Compact = _settings.Compact;
-        LeftPadding = _settings.LeftPadding;
-        PropagateExceptions = _settings.PropagateExceptions;
-        ExcludeStackTrace = _settings.ExcludeStackTrace;
-        ShowLineNumbers = _settings.ShowLineNumbers;
+        Repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        Settings = settings ?? new ReportSettings();
+        Characters = Settings.Characters ??= CharacterSet.Create(console);
+        Formatter = Settings.Formatter ?? new DiagnosticFormatter();
+        Builder = new ReportBuilder(console, Characters);
     }
 
     public DiagnosticContext CreateDiagnosticContext(Diagnostic diagnostic)
     {
-        var groups = SourceGroupCollection.CreateFromLabels(_repository, diagnostic.Labels);
+        var groups = SourceGroupCollection.CreateFromLabels(Repository, diagnostic.Labels);
         return new DiagnosticContext(this, diagnostic, groups);
     }
 }

@@ -46,6 +46,13 @@ public sealed class ReportSettings
     public bool ShowLineNumbers { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether or not
+    /// the path is shown.
+    /// </summary>
+    /// <remarks>Defaults to <c>true</c>.</remarks>
+    public bool ShowPath { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets a value indicating whether or not stack traces
     /// should be excluded.
     /// </summary>

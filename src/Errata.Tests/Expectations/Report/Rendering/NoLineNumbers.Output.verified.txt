@@ -2,7 +2,7 @@
 NOTE: Try changing the type
   ┌─[Program.cs]
   │
-  ·             var qux = foo / bar;
+  │             var qux = foo / bar;
   ·                       ─┬─ ┬ ─┬─ 
   ·                        ╰──────── This is of type 'int'
   ·                           │  │  

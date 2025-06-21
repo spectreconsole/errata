@@ -42,7 +42,7 @@ internal sealed class ReportRenderer
             {
                 renderer.Render(diagnostic);
             }
-            catch (Exception ex) when (!ctx.PropagateExceptions)
+            catch (Exception ex) when (!ctx.Settings.PropagateExceptions)
             {
                 errors.Add(GetError(ctx, diagnostic, ex));
                 errors.Add(new Text("\n"));
@@ -110,7 +110,7 @@ internal sealed class ReportRenderer
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(ex.StackTrace) && !ctx.ExcludeStackTrace)
+        if (!string.IsNullOrWhiteSpace(ex.StackTrace) && !ctx.Settings.ExcludeStackTrace)
         {
             builder.AppendLine();
             builder.AppendLine("[blue]Stack trace:[/]");

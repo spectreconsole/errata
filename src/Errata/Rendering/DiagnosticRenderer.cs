@@ -39,22 +39,36 @@ internal sealed class DiagnosticRenderer
             ctx.Builder.CommitLine();
         }
 
+        // No path but we wrote prefix or note?
+        if (!ctx.ShowPath && (prefix != null || !string.IsNullOrWhiteSpace(diagnostic.Note)))
+        {
+            // Append an empty line
+            ctx.Builder.Append(string.Empty);
+            ctx.Builder.CommitLine();
+        }
+
         // Iterate all source groups
         foreach (var (_, first, last, group) in ctx.Groups.Enumerate())
         {
-            // 🔎 ···┌─[Program.cs]\n
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-            ctx.Builder.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
-            ctx.Builder.Append(Character.HorizontalLine, Color.Grey);
-            ctx.Builder.Append("[", Color.Grey);
-            ctx.Builder.Append(group.Source.Name, Color.White);
-            ctx.Builder.Append("]", Color.Grey);
-            ctx.Builder.CommitLine();
+            if (ctx.ShowPath)
+            {
+                // 🔎 ···┌─[Program.cs]\n
+                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                ctx.Builder.Append(first ? Character.TopLeftCornerHard : Character.LeftConnector, Color.Grey);
+                ctx.Builder.Append(Character.HorizontalLine, Color.Grey);
+                ctx.Builder.Append("[", Color.Grey);
+                ctx.Builder.Append(group.Source.Name, Color.White);
+                ctx.Builder.Append("]", Color.Grey);
+                ctx.Builder.CommitLine();
+            }
 
-            // 🔎 ···│\n
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-            ctx.Builder.Append(Character.VerticalLine, Color.Grey);
-            ctx.Builder.CommitLine();
+            if (ctx is { ShowPath: true, Compact: false })
+            {
+                // 🔎 ···│\n
+                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                ctx.Builder.Append(Character.VerticalLine, Color.Grey);
+                ctx.Builder.CommitLine();
+            }
 
             // Iterate all lines in the line range
             foreach (var (_, _, lastLine, lineIndex) in group.Source.GetLineRange(group.Span).Enumerate())
@@ -102,11 +116,14 @@ internal sealed class DiagnosticRenderer
                 }
             }
 
-            // 🔎 ···(separator)\n
-            var separator = last ? Character.VerticalLine : Character.Dot;
-            ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-            ctx.Builder.Append(separator, Color.Grey);
-            ctx.Builder.CommitLine();
+            if (ctx is { ShowPath: true, Compact: false })
+            {
+                // 🔎 ···(separator)\n
+                var separator = last ? Character.VerticalLine : Character.Dot;
+                ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                ctx.Builder.Append(separator, Color.Grey);
+                ctx.Builder.CommitLine();
+            }
 
             // Got labels with notes?
             var labelsWithNotes = group.Labels.Where(l => l.Note != null).ToArray();
@@ -126,7 +143,7 @@ internal sealed class DiagnosticRenderer
                         ctx.Builder.CommitLine();
                     }
 
-                    if (lastLabel)
+                    if (lastLabel && !ctx.Compact)
                     {
                         // 🔎 ···│\n
                         ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
@@ -136,7 +153,7 @@ internal sealed class DiagnosticRenderer
                 }
             }
 
-            if (last)
+            if (last && ctx.ShowPath)
             {
                 // 🔎 ···└─\n
                 ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
@@ -270,9 +287,9 @@ internal sealed class DiagnosticRenderer
     private static void RenderMargin(
         DiagnosticContext ctx,
         TextLine line,
-        bool showLineNumber)
+        bool lineHasContent)
     {
-        if (ctx.ShowLineNumbers && showLineNumber)
+        if (ctx.ShowLineNumbers && lineHasContent)
         {
             // 🔎 ·38·│
             ctx.Builder.AppendSpaces(ctx.HasLeftPadding ? 1 : 0);
@@ -284,7 +301,7 @@ internal sealed class DiagnosticRenderer
         {
             // 🔎 ····(dot)
             ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-            ctx.Builder.Append(Character.Dot, Color.Grey);
+            ctx.Builder.Append(lineHasContent ? Character.VerticalLine : Character.Dot, Color.Grey);
         }
     }
 
