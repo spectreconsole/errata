@@ -58,4 +58,26 @@ public static class LabelExtensions
         label.Priority = priority;
         return label;
     }
+
+    /// <summary>
+    /// Sets the number of additional context lines to display above this label.
+    /// </summary>
+    /// <param name="label">The label.</param>
+    /// <param name="lines">The number of lines above the label to display as context.</param>
+    /// <returns>The same instance so that multiple calls can be chained.</returns>
+    public static Label WithContextLines(this Label label, int lines)
+    {
+        if (label is null)
+        {
+            throw new ArgumentNullException(nameof(label));
+        }
+
+        if (lines < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(lines), "Context lines must be greater than or equal to zero");
+        }
+
+        label.ContextLines = lines;
+        return label;
+    }
 }

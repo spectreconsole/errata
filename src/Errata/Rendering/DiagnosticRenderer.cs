@@ -63,48 +63,71 @@ internal sealed class DiagnosticRenderer
                 .ToList();
 
             // Iterate all lines in the line range
-            foreach (var (_, _, lastLine, lineIndex) in group.Source.GetLineRange(group.Span).Enumerate())
+            var lineIndices = group.Source.GetLineRange(group.Span).ToList();
+            for (var i = 0; i < lineIndices.Count; i++)
             {
+                var lineIndex = lineIndices[i];
+                var lastLine = i == lineIndices.Count - 1;
+
                 // Get the current line
                 var line = group.Source.Lines[lineIndex];
 
                 // Get all labels for the current line
                 var labels = group.GetLabelsForLine(line);
-                if (labels.Count == 0)
+
+                // Determine if this is a context-only line (marked as context but has no labels)
+                var isContextLine = group.IsContextLine(lineIndex) && labels.Count == 0;
+
+                if (isContextLine)
                 {
+                    // Render context line with dim styling
+                    RenderContextLine(ctx, line);
+                }
+                else if (labels.Count > 0)
+                {
+                    // Write text line
+                    RenderText(ctx, line, labels);
+
+                    // Write labels
+                    foreach (var (row, label) in labels.EnumerateWithIndex())
+                    {
+                        // Render anchors and vertical lines
+                        RenderVerticalLines(ctx, line, labels, row);
+
+                        // Render the horizontal lines
+                        RenderHorizontalLines(ctx, line, labels, row, label);
+
+                        // Render the label message
+                        if (label.ShouldRenderMessage)
+                        {
+                            // 🔎 The label message
+                            ctx.Builder.AppendSpace();
+                            ctx.Builder.Append(label.Message, label.Color);
+                        }
+
+                        // 🔎 \n
+                        ctx.Builder.CommitLine();
+                    }
+                }
+                else
+                {
+                    // Skip lines that have no labels and are not context lines
                     continue;
                 }
 
-                // Write text line
-                RenderText(ctx, line, labels);
-
-                // Write labels
-                foreach (var (row, label) in labels.EnumerateWithIndex())
-                {
-                    // Render anchors and vertical lines
-                    RenderVerticalLines(ctx, line, labels, row);
-
-                    // Render the horizontal lines
-                    RenderHorizontalLines(ctx, line, labels, row, label);
-
-                    // Render the label message
-                    if (label.ShouldRenderMessage)
-                    {
-                        // 🔎 The label message
-                        ctx.Builder.AppendSpace();
-                        ctx.Builder.Append(label.Message, label.Color);
-                    }
-
-                    // 🔎 \n
-                    ctx.Builder.CommitLine();
-                }
-
+                // Only render separator if not the last line AND there's a gap to the next line
                 if (!lastLine)
                 {
-                    // 🔎 ···(dot)\n
-                    ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-                    ctx.Builder.Append(Character.Dot, Color.Grey);
-                    ctx.Builder.CommitLine();
+                    var nextLineIndex = lineIndices[i + 1];
+                    var hasGap = nextLineIndex != lineIndex + 1;
+
+                    if (hasGap)
+                    {
+                        // 🔎 ···(dot)\n
+                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                        ctx.Builder.Append(Character.Dot, Color.Grey);
+                        ctx.Builder.CommitLine();
+                    }
                 }
             }
 
@@ -116,29 +139,26 @@ internal sealed class DiagnosticRenderer
 
             // Got labels with notes?
             var labelsWithNotes = group.Labels.Where(l => l.Note != null).ToArray();
-            if (labelsWithNotes != null)
+            foreach (var (_, _, lastLabel, labelWithNote) in labelsWithNotes.Enumerate())
             {
-                foreach (var (_, firstLabel, lastLabel, labelWithNote) in labelsWithNotes.Enumerate())
+                // Got a note?
+                if (!string.IsNullOrWhiteSpace(labelWithNote.Note))
                 {
-                    // Got a note?
-                    if (!string.IsNullOrWhiteSpace(labelWithNote.Note))
-                    {
-                        // 🔎 ···(dot) NOTE: This is a note\n
-                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-                        ctx.Builder.Append(Character.Dot, Color.Grey);
-                        ctx.Builder.AppendSpace();
-                        ctx.Builder.Append("NOTE: ", Color.Aqua);
-                        ctx.Builder.Append(labelWithNote.Note);
-                        ctx.Builder.CommitLine();
-                    }
+                    // 🔎 ···(dot) NOTE: This is a note\n
+                    ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                    ctx.Builder.Append(Character.Dot, Color.Grey);
+                    ctx.Builder.AppendSpace();
+                    ctx.Builder.Append("NOTE: ", Color.Aqua);
+                    ctx.Builder.Append(labelWithNote.Note);
+                    ctx.Builder.CommitLine();
+                }
 
-                    if (lastLabel)
-                    {
-                        // 🔎 ···│\n
-                        ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
-                        ctx.Builder.Append(Character.VerticalLine, Color.Grey);
-                        ctx.Builder.CommitLine();
-                    }
+                if (lastLabel)
+                {
+                    // 🔎 ···│\n
+                    ctx.Builder.AppendSpaces(ctx.LineNumberWidth + ctx.LeftPadding);
+                    ctx.Builder.Append(Character.VerticalLine, Color.Grey);
+                    ctx.Builder.CommitLine();
                 }
             }
 
@@ -161,6 +181,18 @@ internal sealed class DiagnosticRenderer
         {
             var color = GetHighlightColor(labels, line, column);
             ctx.Builder.Append(character, color);
+        }
+
+        ctx.Builder.CommitLine();
+    }
+
+    private static void RenderContextLine(DiagnosticContext ctx, TextLine line)
+    {
+        RenderMargin(ctx, line, true);
+        ctx.Builder.AppendSpace();
+        foreach (var character in line.Text)
+        {
+            ctx.Builder.Append(character, null, Decoration.Dim);
         }
 
         ctx.Builder.CommitLine();

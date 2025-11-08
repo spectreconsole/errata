@@ -1,0 +1,8 @@
+﻿Error [CS0116]: Namespace cannot be empty
+   ┌─[Program.cs]
+   │
+ 1 │ using System;
+   · ────┬────    
+   ·     ╰──────── Namespace is empty
+   │
+   └─

@@ -16,6 +16,7 @@ internal sealed class ReportContext
     public bool LeftPadding { get; }
     public bool PropagateExceptions { get; }
     public bool ExcludeStackTrace { get; }
+    public int DefaultContextLines { get; }
 
     public ReportContext(IAnsiConsole console, ISourceRepository repository, ReportSettings? settings)
     {
@@ -30,11 +31,12 @@ internal sealed class ReportContext
         LeftPadding = _settings.LeftPadding;
         PropagateExceptions = _settings.PropagateExceptions;
         ExcludeStackTrace = _settings.ExcludeStackTrace;
+        DefaultContextLines = _settings.DefaultContextLines;
     }
 
     public DiagnosticContext CreateDiagnosticContext(Diagnostic diagnostic)
     {
-        var groups = SourceGroupCollection.CreateFromLabels(_repository, diagnostic.Labels);
+        var groups = SourceGroupCollection.CreateFromLabels(_repository, diagnostic.Labels, DefaultContextLines);
         return new DiagnosticContext(this, diagnostic, groups);
     }
 }

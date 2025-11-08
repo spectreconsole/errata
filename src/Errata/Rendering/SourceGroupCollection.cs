@@ -11,7 +11,7 @@ internal sealed class SourceGroupCollection : List<SourceGroup>
     {
     }
 
-    public static SourceGroupCollection CreateFromLabels(ISourceRepository repository, List<Label> labels)
+    public static SourceGroupCollection CreateFromLabels(ISourceRepository repository, List<Label> labels, int defaultContextLines)
     {
         if (repository is null)
         {
@@ -43,9 +43,22 @@ internal sealed class SourceGroupCollection : List<SourceGroup>
             var endLine = source.GetLineOffset(span.End).LineIndex;
             var kind = startLine == endLine ? LabelKind.Inline : LabelKind.MultiLine;
 
+            // Apply default context lines if label doesn't have its own context lines set
+            var effectiveLabel = label;
+            if (label.ContextLines == 0 && defaultContextLines > 0)
+            {
+                effectiveLabel = new Label(label.SourceId, span, label.Message)
+                {
+                    Color = label.Color,
+                    Note = label.Note,
+                    Priority = label.Priority,
+                    ContextLines = defaultContextLines,
+                };
+            }
+
             groups[source].Add(
                 new LabelInfo(
-                    label.SourceId, span, label,
+                    effectiveLabel.SourceId, span, effectiveLabel,
                     new LineRange(startLine, endLine)));
         }
 

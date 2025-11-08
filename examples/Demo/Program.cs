@@ -17,7 +17,12 @@ public static class Program
             Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
                 .WithCode("CS0019")
                 .WithNote("Try changing the type")
+                .WithLabel(new Label("Demo/Files/Program.cs", new Location(3, 2), "Not sure what this is")
+                    .WithLength(5)
+                    .WithPriority(1)
+                    .WithColor(Color.Yellow))
                 .WithLabel(new Label("Demo/Files/Program.cs", new Location(15, 23), "This is of type 'int'")
+                    .WithContextLines(2)
                     .WithLength(3)
                     .WithPriority(1)
                     .WithColor(Color.Yellow))
@@ -33,6 +38,7 @@ public static class Program
             Diagnostic.Info("Fix formatting")
                 .WithCode("IDE0055"))
                 .WithLabel(new Label("Demo/Files/Program.cs", 174..176, "Code should not contain trailing whitespace")
+
                     .WithColor(Color.Blue));
 
         // Markdown
@@ -44,6 +50,7 @@ public static class Program
                 .WithLabel(new Label("Demo/Files/Example.md", 31..41, "Invalid markdown")
                     .WithColor(Color.Red))
                 .WithLabel(new Label("Demo/Files/Example.md", 251..270, "Did you mean 'Yabba dabba doo'?")
+                    .WithContextLines(3)
                     .WithColor(Color.Yellow)));
 
         // C++
