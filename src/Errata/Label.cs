@@ -37,6 +37,11 @@ public sealed class Label
     /// </summary>
     public int Priority { get; set; } = 0;
 
+    /// <summary>
+    /// Gets or sets the number of additional context lines to display above this label.
+    /// </summary>
+    public int ContextLines { get; set; } = 0;
+
 #if NET6_0_OR_GREATER
     /// <summary>
     /// Initializes a new instance of the <see cref="Label"/> class.

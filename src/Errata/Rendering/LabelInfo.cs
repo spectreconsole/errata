@@ -34,6 +34,7 @@ internal sealed class LabelInfo
     public string Message => Label.Message;
     public string? Note => Label.Note;
     public int Priority => Label.Priority;
+    public int ContextLines => Label.ContextLines;
 
     public LabelInfo(
         string sourceId, TextSpan sourceSpan, Label label,

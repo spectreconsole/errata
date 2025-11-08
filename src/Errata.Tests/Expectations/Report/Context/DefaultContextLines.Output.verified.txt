@@ -1,0 +1,10 @@
+﻿Error [CS0019]: Operator '/' cannot be applied to operands of type 'string' and 'int'
+    ┌─[Program.cs]
+    │
+ 13 │             var foo = 1;
+ 14 │             var bar = "lol";
+ 15 │             var qux = foo / bar;
+    ·                       ─┬─       
+    ·                        ╰──────── This is of type 'int'
+    │
+    └─

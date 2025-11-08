@@ -462,4 +462,158 @@ public sealed class ReportTests
             return Verifier.Verify(console.Output);
         }
     }
+
+    [ExpectationPath("Context")]
+    public sealed class WithContextLines
+    {
+        [Fact]
+        [Expectation("SingleContext")]
+        public Task Should_Render_Label_With_One_Context_Line_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow)
+                        .WithLength(3)
+                        .WithContextLines(1)));
+
+            // When
+            report.Render(console);
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("MultipleContext")]
+        public Task Should_Render_Label_With_Multiple_Context_Lines_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow)
+                        .WithLength(3)
+                        .WithContextLines(3)));
+
+            // When
+            report.Render(console);
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("MultipleLabelsWithContext")]
+        public Task Should_Render_Multiple_Labels_With_Different_Context_Lines_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithNote("Try changing the type")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow)
+                        .WithLength(3)
+                        .WithContextLines(2))
+                    .WithLabel(new Label("Program.cs", new Location(15, 27), "Division is not possible")
+                        .WithColor(Color.Red)
+                        .WithLength(1))
+                    .WithLabel(new Label("Program.cs", new Location(15, 29), "This is of type 'string'")
+                        .WithColor(Color.Blue)
+                        .WithLength(3)));
+
+            // When
+            report.Render(console);
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("ContextAtStartOfFile")]
+        public Task Should_Render_Label_With_Context_At_Start_Of_File_Correctly()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Namespace cannot be empty")
+                    .WithCode("CS0116")
+                    .WithLabel(new Label("Program.cs", new Location(1, 1), "Namespace is empty")
+                        .WithColor(Color.Red)
+                        .WithLength(9)
+                        .WithContextLines(5)));
+
+            // When
+            report.Render(console);
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("DefaultContextLines")]
+        public Task Should_Apply_Default_Context_Lines_From_Settings()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow)
+                        .WithLength(3)));
+
+            // When - Set default context lines to 2
+            report.Render(console, new ReportSettings
+            {
+                DefaultContextLines = 2,
+            });
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+
+        [Fact]
+        [Expectation("DefaultContextLinesOverride")]
+        public Task Should_Allow_Label_To_Override_Default_Context_Lines()
+        {
+            // Given
+            var console = new TestConsole().Width(80);
+            var report = new Report(new EmbeddedResourceRepository());
+
+            report.AddDiagnostic(
+                Diagnostic.Error("Operator '/' cannot be applied to operands of type 'string' and 'int'")
+                    .WithCode("CS0019")
+                    .WithLabel(new Label("Program.cs", new Location(15, 23), "This is of type 'int'")
+                        .WithColor(Color.Yellow)
+                        .WithLength(3)
+                        .WithContextLines(5)));  // Override default with 5
+
+            // When - Set default context lines to 2
+            report.Render(console, new ReportSettings
+            {
+                DefaultContextLines = 2,
+            });
+
+            // Then
+            return Verifier.Verify(console.Output);
+        }
+    }
 }

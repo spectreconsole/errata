@@ -40,4 +40,10 @@ public sealed class ReportSettings
     /// should be excluded.
     /// </summary>
     internal bool ExcludeStackTrace { get; set; }
+
+    /// <summary>
+    /// Gets or sets the default number of context lines to display above labels.
+    /// This can be overridden on individual labels using <c>WithContext(int)</c>.
+    /// </summary>
+    public int DefaultContextLines { get; set; } = 0;
 }
