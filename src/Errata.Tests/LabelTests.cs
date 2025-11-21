@@ -1,6 +1,3 @@
-using Shouldly;
-using Xunit;
-
 namespace Errata.Tests;
 
 public sealed class LabelTests

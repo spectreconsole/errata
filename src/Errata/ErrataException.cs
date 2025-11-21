@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
 namespace Errata;
 
 /// <summary>
@@ -29,23 +25,6 @@ public sealed class ErrataException : Exception
     /// <param name="message">The message that describes the error.</param>
     public ErrataException(string message)
         : base(message)
-    {
-        Context = new Dictionary<string, object?>();
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ErrataException"/> class with serialized data.
-    /// </summary>
-    /// <param name="info">
-    /// The <see cref="SerializationInfo"/> that holds the serialized
-    /// object data about the exception being thrown.
-    /// </param>
-    /// <param name="context">
-    /// The <see cref="StreamingContext"/> that contains contextual
-    /// information about the source or destination.
-    /// </param>
-    public ErrataException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
     {
         Context = new Dictionary<string, object?>();
     }

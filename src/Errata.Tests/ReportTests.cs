@@ -1,10 +1,3 @@
-using System.Threading.Tasks;
-using Spectre.Console;
-using Spectre.Console.Testing;
-using VerifyTests;
-using VerifyXunit;
-using Xunit;
-
 namespace Errata.Tests;
 
 [ExpectationPath("Report")]

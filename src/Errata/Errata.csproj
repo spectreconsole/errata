@@ -1,24 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Disable nullability for netstandard2.0 since polyfills are not -->
+  <!-- working correctly with nullability analysis. -->
+  <!-- This is no big deal since nullability is checked for other TFMs. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CS8632</NoWarn>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json" Link="Properties/stylecop.json" />
     <None Include="../../resources/gfx/small-logo.png" Pack="true" PackagePath="\" Link="Properties/small-logo.png" />
   </ItemGroup>
  
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.50.0" />
-  </ItemGroup>
-		
-  <!-- Nullability support -->
-  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
-    <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[6.0.5]" />
-    <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
+    <PackageReference Include="Polyfill">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Spectre.Console" />
   </ItemGroup>
 
 </Project>

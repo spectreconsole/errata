@@ -1,5 +1,3 @@
-using System;
-
 namespace Errata.Tests;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

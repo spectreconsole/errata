@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Reflection;
-
 namespace Errata.Tests;
 
 public static class EmbeddedResourceReader

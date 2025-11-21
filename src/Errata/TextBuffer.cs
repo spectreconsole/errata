@@ -1,5 +1,3 @@
-using System;
-
 namespace Errata;
 
 internal sealed class TextBuffer
