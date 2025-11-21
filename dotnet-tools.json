@@ -2,20 +2,14 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "cake.tool": {
-      "version": "3.2.0",
-      "commands": [
-        "dotnet-cake"
-      ]
-    },
     "dotnet-example": {
-      "version": "1.6.0",
+      "version": "5.0.0",
       "commands": [
         "dotnet-example"
       ]
     },
     "verify.tool": {
-      "version": "0.6.0",
+      "version": "0.7.0",
       "commands": [
         "dotnet-verify"
       ]
