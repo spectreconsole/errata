@@ -17,7 +17,10 @@ internal sealed class RenderConsole : IAnsiConsole
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
 
-        Profile = new Profile(_console.Profile.Out, _console.Profile.Encoding)
+        Profile = new Profile(
+            _console.Profile.Out,
+            _console.Profile.Capabilities,
+            _console.Profile.Encoding)
         {
             Capabilities = _console.Profile.Capabilities,
             Width = int.MaxValue,
@@ -33,5 +36,10 @@ internal sealed class RenderConsole : IAnsiConsole
     public void Write(IRenderable renderable)
     {
         _console.Write(renderable);
+    }
+
+    public void WriteAnsi(Action<AnsiWriter> action)
+    {
+        _console.WriteAnsi(action);
     }
 }
